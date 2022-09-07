@@ -1,0 +1,101 @@
+---
+title: "IntRoduction - Day 1"
+author: "Bernard Surial"
+institute: "Infektiologie | Inselspital Bern"
+format: 
+  revealjs:
+    theme: default
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+```
+
+## Outline
+
+-   Use Projects
+    -   Folder structures (data, scripts, graphs)
+-   Libraries
+-   Coding
+    -   assigning names
+
+    -   using functions
+
+    -   `==`, `!=`, `&`, `|`, `!`
+
+    -   variable types (character, numeric, logical)
+
+## Data manipulation
+
+-   Read data in various formats
+    -   readxl, haven
+
+    -   csv, rds
+-   Save data
+    -   Standard folder structure
+    -   Use prefix: e.g. `01-data.rds`
+-   Concept of tibble vs. data.frame. Show `View()`.
+
+## Outline
+
+-   Use `%>%` for readability
+
+-   `dplyr` verbs
+
+    -   `select`, `arrange`, `filter`, `mutate`, `summarise`, `group_by`
+
+-   
+
+    ## Tidy data
+
+    -   
+
+## Data analysis workflow
+
+![](https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png)
+
+```{r}
+#| echo: fenced
+2+2
+```
+
+## Tidy data
+
+1.  Each [**variable**]{.yellow} must have its own column.
+
+2.  Each observation must have its own row.
+
+3.  Each value must have its own cell.
+
+![](https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png)
+
+## Model basics
+
+-   Linear regression
+
+-   Logistic regression
+
+-   `broom::tidy(m, exp = TRUE)`
+
+## Linear regression (1)
+
+### 
+
+```{r}
+#| echo: true
+mpg %>% 
+  ggplot(aes(x = hwy, y = displ)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+```
+
+## Linear regression (2)
+
+```{r}
+#| echo: true
+m <- lm(displ ~ hwy, data = mpg) # generate linear regression model
+broom::tidy(m) %>% 
+  mutate(p.value = scales::pvalue(p.value)) %>% 
+  knitr::kable(digit = 2)
+```
