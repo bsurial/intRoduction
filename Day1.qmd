@@ -5,62 +5,145 @@ institute: "Infektiologie | Inselspital Bern"
 format: 
   revealjs:
     theme: default
+    preview-links: auto
 editor: visual
 from: markdown+emoji
 ---
 
-
 ## Outline Day 1
 
-- Look at and feel **R** and **R-Studio**
-- Tips and best practices for project management
-- Getting the engine started
-- Introduction to `tidyverse`
-
-
+-   Look at and feel **R** and **R-Studio**
+-   Tips and best practices for project management
+-   Getting the engine started
+-   Introduction to `tidyverse`
 
 ## Look at and feel **R** and **R-Studio**
 
-:::: {.columns}
-
-::: {.column width="40%" layout="[[-1], [1], [-1]]"}
-![](Rlogo.png){fig-align="center"}
-:::
-
-::: {.column width="20%"}
-
-:::
-
-::: {.column width="40%" layout="[[-1], [1], [-1]]"}
-![](Rstudiologo.png){fig-align="center"}
-:::
-::::
-
-
+![](Rlogos.png){fig-align="center"}
 
 ## Look at and feel **R** and **R-Studio**
+
+## Project management: (1) Folders
+
+-   Use an `r-projects` folder for everything R related
+-   Use one folder for each project
+-   My default folders for each project
+    -   :open_file_folder: `data`: raw data (never overwrite those files!)
+    -   :open_file_folder: `processed`: modified data
+    -   :open_file_folder: `scripts`: contains all R scripts
+    -   :open_file_folder: `graphs`: for my nice plots
+
+## Project management: (1) Folders
+
+::: {layout="[[-1], [1], [-1]]"}
+![](folders.png)
+:::
+
+## Project management: (2) Scripts
+
+-   All scripts go into the `scripts` folder
+-   Use numbered prefixes such as `01-`, `02-` etc.
+-   Create pipelines to be run in a sequence
+    -   :point_up: `01-xxx.R` cannot depend on `02-xxx.R`
+-   Use the same prefix for all outputs from that script (e.g. graphs, datasets)
+-   `# Comment` your scripts. ⌘ + ⇧ + C / crtl + ⇧ + C is your friend
+
+## 
+
+::: {layout="[[-1], [1], [1], [-1]]"}
+> **"In every project you have at least one other collaborator: future-you. 
+> You don't want future-you to curse past-you"** *Hadley Wickham*
+:::
+
+![](hadley-pic.jpeg){.absolute top="300" left="350" width="300"}
+
+## 
+
+::: {layout="[[-0.5], [1], [-1]]"}
+>**"If the first line of your R script is**  
+>**`setwd("C:\Jenny\path\that\only\I\have")`**  
+>**I will come into your office and**  
+>**SET YOUR COMPUTER ON FIRE :fire:."**  
+>*Jenny Bryan*
+:::
+![](jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
+
+
+## 
+
+::: {layout="[[-0.5], [1], [-1]]"}
+>**"If the first line of your R script is**  
+>**`rm(list = ls())`**  
+>**I will come into your office and**  
+>**SET YOUR COMPUTER ON FIRE :fire:."**  
+>*Jenny Bryan*
+:::
+![](jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
+
+
+## Project management: (3) Projects
+
+- Hard-wired absolute paths do not travel well (time and space)
+  - You change a folder and all the code breaks!
+  - Code only runs on your machine, not on mine!
+
+- Switching between projects becomes tedious
+  - `rm(list = ls())` does not eliminate everything :-1:
+  - To **RESTART** R is a better solution :+1:
+  
+## Project management: (3) Projects
+![](rstudio-workspace.png)
+
+## Project management: (3) Projects
+
+- Automatically sets the working directory for Project A to Project A
+- Makes switching from Project A to Project B very easy
+- All paths are relative by default
+- You can work simultaneously on ≥ 1 project
+![](r-project-icon.png){.absolute top="450" left="750" width="200"}
+
+
+---
+
+## Project management: (3) Projects
+
+
+Let's setup a new project together.  
+  
+For more details on "Project-oriented" workflows, see Jenny Bryans
+excellent website:
+
+::: {style="text-align: center; margin-top: 1em"}
+[What They Forgot to Teach You About R](https://rstats.wtf/){preview-link="true" style="text-align: center"}
+:::
+---
+
+---
+
+
+## Outline
 
 -   Use Projects
-    -   Folder structures (data, scripts, graphs)
+-   Folder structures (data, scripts, graphs)
 -   Libraries
 -   Coding
-    -   assigning names
+-   assigning names
 
-    -   using functions
+-   using functions
 
-    -   `==`, `!=`, `&`, `|`, `!`
+-   `==`, `!=`, `&`, `|`, `!`
 
-    -   variable types (character, numeric, logical)
+-   variable types (character, numeric, logical)
 
 ## Data manipulation
 
 -   Read data in various formats
-    -   readxl, haven
+-   readxl, haven
 
-    -   csv, rds
+-   csv, rds
 -   Save data
-    -   Standard folder structure
-    -   Use prefix: e.g. `01-data.rds`
+-   Standard folder structure
+-   Use prefix: e.g. `01-data.rds`
 -   Concept of tibble vs. data.frame. Show `View()`.
 
 ## Outline
@@ -69,21 +152,18 @@ from: markdown+emoji
 
 -   `dplyr` verbs
 
-    -   `select`, `arrange`, `filter`, `mutate`, `summarise`, `group_by`
+-   `select`, `arrange`, `filter`, `mutate`, `summarise`, `group_by`
 
 -   
 
-    ## Tidy data
-
-    -   
 
 ## Data analysis workflow
 
 ![](https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png)
+
 ```{r}
 library(tidyverse)
 ```
-
 
 ```{r}
 #| echo: fenced
