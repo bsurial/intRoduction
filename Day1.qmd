@@ -6,13 +6,39 @@ format:
   revealjs:
     theme: default
 editor: visual
+from: markdown+emoji
 ---
 
-```{r}
-library(tidyverse)
-```
 
-## Outline
+## Outline Day 1
+
+- Look at and feel **R** and **R-Studio**
+- Tips and best practices for project management
+- Getting the engine started
+- Introduction to `tidyverse`
+
+
+
+## Look at and feel **R** and **R-Studio**
+
+:::: {.columns}
+
+::: {.column width="40%" layout="[[-1], [1], [-1]]"}
+![](Rlogo.png){fig-align="center"}
+:::
+
+::: {.column width="20%"}
+
+:::
+
+::: {.column width="40%" layout="[[-1], [1], [-1]]"}
+![](Rstudiologo.png){fig-align="center"}
+:::
+::::
+
+
+
+## Look at and feel **R** and **R-Studio**
 
 -   Use Projects
     -   Folder structures (data, scripts, graphs)
@@ -54,6 +80,10 @@ library(tidyverse)
 ## Data analysis workflow
 
 ![](https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png)
+```{r}
+library(tidyverse)
+```
+
 
 ```{r}
 #| echo: fenced
