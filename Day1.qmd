@@ -51,8 +51,7 @@ from: markdown+emoji
 ## 
 
 ::: {layout="[[-1], [1], [1], [-1]]"}
-> **"In every project you have at least one other collaborator: future-you. 
-> You don't want future-you to curse past-you"** *Hadley Wickham*
+> **"In every project you have at least one other collaborator: future-you. You don't want future-you to curse past-you"** *Hadley Wickham*
 :::
 
 ![](hadley-pic.jpeg){.absolute top="300" left="350" width="300"}
@@ -60,73 +59,343 @@ from: markdown+emoji
 ## 
 
 ::: {layout="[[-0.5], [1], [-1]]"}
->**"If the first line of your R script is**  
->**`setwd("C:\Jenny\path\that\only\I\have")`**  
->**I will come into your office and**  
->**SET YOUR COMPUTER ON FIRE :fire:."**  
->*Jenny Bryan*
+> **"If the first line of your R script is\
+> **`setwd("C:\Jenny\path\that\only\I\have")`**\
+> **I will come into your office and**\
+> **SET YOUR COMPUTER ON FIRE :fire:."\
+> *Jenny Bryan*
 :::
-![](jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
 
+![](jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
 
 ## 
 
 ::: {layout="[[-0.5], [1], [-1]]"}
->**"If the first line of your R script is**  
->**`rm(list = ls())`**  
->**I will come into your office and**  
->**SET YOUR COMPUTER ON FIRE :fire:."**  
->*Jenny Bryan*
+> **"If the first line of your R script is\
+> **`rm(list = ls())`**\
+> **I will come into your office and**\
+> **SET YOUR COMPUTER ON FIRE :fire:."\
+> *Jenny Bryan*
 :::
+
 ![](jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
 
+## Project management: (3) Projects
+
+-   Hard-wired absolute paths do not travel well (time and space)
+    -   You change a folder and all the code breaks!
+    -   Code only runs on your machine, not on mine!
+-   Switching between projects becomes tedious
+    -   `rm(list = ls())` does not eliminate everything :-1:
+    -   To **RESTART** R is a better solution :+1:
 
 ## Project management: (3) Projects
 
-- Hard-wired absolute paths do not travel well (time and space)
-  - You change a folder and all the code breaks!
-  - Code only runs on your machine, not on mine!
-
-- Switching between projects becomes tedious
-  - `rm(list = ls())` does not eliminate everything :-1:
-  - To **RESTART** R is a better solution :+1:
-  
-## Project management: (3) Projects
 ![](rstudio-workspace.png)
 
-## Project management: (3) Projects
+## 
 
-- Automatically sets the working directory for Project A to Project A
-- Makes switching from Project A to Project B very easy
-- All paths are relative by default
-- You can work simultaneously on ≥ 1 project
-![](r-project-icon.png){.absolute top="450" left="750" width="200"}
-
-
----
+And while we're there: ![](rainbows.png)
 
 ## Project management: (3) Projects
 
+-   Automatically sets the working directory for Project A to Project A
+-   Makes switching from Project A to Project B very easy
+-   All paths are relative by default
+-   You can work simultaneously on ≥ 1 project ![](r-project-icon.png){.absolute top="450" left="750" width="200"}
 
-Let's setup a new project together.  
-  
-For more details on "Project-oriented" workflows, see Jenny Bryans
-excellent website:
+------------------------------------------------------------------------
+
+## Project management: (3) Projects
+
+Let's setup a new project together.
+
+For more details on "Project-oriented" workflows, see Jenny Bryans excellent website:
 
 ::: {style="text-align: center; margin-top: 1em"}
 [What They Forgot to Teach You About R](https://rstats.wtf/){preview-link="true" style="text-align: center"}
 :::
----
+
+------------------------------------------------------------------------
+
+## Steps in a data analysis project
+
+![](data-science.png){.absolute top="250" left="220" height="250"}
+
+## Tidyverse provides tools for each step
+
+![](tidyverse-package-workflow.png)
+
+------------------------------------------------------------------------
+
+## Loading libraries
+
+```{r}
+#| echo: true
+#| message: true
+library(tidyverse)
+```
+
+```{r}
+#| echo: true
+
+# Read sample data
+who_dat <- read_rds("data/who_clean.rds")
+```
+
+## Our first graph! {.scrollable}
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "Show the code"
+who_dat %>% 
+  filter(country %in% c("Germany", "United States of America", 
+                        "Brazil", "Afghanistan")) %>% 
+  group_by(country, year) %>% 
+  summarise(n = sum(value)) %>% 
+  ggplot(aes(x = year, y = n)) + 
+  geom_line(aes(color = country), size = 1) + 
+  geom_point(aes(color = country), shape = 21, fill = "white", size = 3) + 
+  facet_wrap(~country, scales = "free_y") + 
+  labs(x = "Year", 
+       y = "N of pulmonary TB cases", 
+       color = "Country", 
+       caption = "Data Source: Global Tuberculosis Report") + 
+  theme_minimal() + 
+  theme(legend.position = "None")
+
+```
+
+## Dplyr basics:
+
+-   `filter()`: pick observations by their values
+-   `select()`: pick variables by their names
+-   `arrange()`: reorder the rows
+-   `mutate()`: create new variables with functions of existing variables
+-   `summarise()`: collapse many values down to a single summary
+
+## Let's look at the TB data again
+
+```{r}
+#| echo: true
+who_dat
+```
 
 ---
 
+## Pipe operator
 
-## Outline
+![](magrittr.jpeg)
 
--   Use Projects
--   Folder structures (data, scripts, graphs)
--   Libraries
+Shortcut: ⌘ + ⇧ + M / crtl + ⇧ + M
+
+You can think of it as **"...and then..."**.
+
+---
+
+
+## Pipe operator
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  head(1)
+```
+
+:smirk:
+
+
+
+```{r}
+#| echo: true
+head(filter(who_dat, country == "Brazil"), 1)
+```
+
+:weary:
+---
+
+
+### `filter()`: pick observations by their values
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil")
+```
+
+## Logical operators
+
+![](logicals.png)
+
+Special case: `is.na()`
+
+------------------------------------------------------------------------
+
+### `select()`: pick variables by their names
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  select(country, year, diag, gender, agegroup, value)
+
+# You could also use select(-c(iso2, iso3))
+```
+
+Useful "helpers" with select: `starts_with()`, `contains()`
+
+---
+
+### `arrange()`: reorder the rows
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  select(-c(iso2, iso3)) %>% 
+  arrange(value) 
+```
+
+------------------------------------------------------------------------
+
+### `arrange()`: reorder the rows
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  select(-c(iso2, iso3)) %>% 
+  arrange(desc(value)) 
+```
+
+------------------------------------------------------------------------
+
+### `mutate()`: create new variables
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  select(-c(iso2, iso3)) %>% 
+  mutate(total_n_cases = sum(value))
+```
+
+------------------------------------------------------------------------
+
+### `mutate()`: create new variables
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  select(-c(iso2, iso3)) %>% 
+  mutate(mean_n_cases = mean(value))
+```
+
+------------------------------------------------------------------------
+
+### `summarise()`: collapse values to a single one
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  select(-c(iso2, iso3)) %>% 
+  summarise(total_n_cases = sum(value))
+```
+
+------------------------------------------------------------------------
+
+### `summarise()`: collapse values to a single one
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country == "Brazil") %>% 
+  select(-c(iso2, iso3)) %>% 
+  group_by(year) %>% 
+  summarise(total_n_cases = sum(value))
+```
+
+------------------------------------------------------------------------
+
+### `summarise()`: collapse values to a single one
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country %in% c("Brazil", "Germany")) %>% 
+  select(-c(iso2, iso3)) %>% 
+  group_by(country) %>% 
+  summarise(total_n_cases = sum(value))
+```
+
+------------------------------------------------------------------------
+
+### `summarise()`: collapse values to a single one
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country %in% c("Brazil", "Germany")) %>% 
+  select(-c(iso2, iso3)) %>% 
+  group_by(country, year) %>% 
+  summarise(total_n_cases = sum(value)) %>% 
+  print(n = 31) # So that all rows are shown to us
+```
+
+------------------------------------------------------------------------
+
+### `summarise()`: collapse values to a single one
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country %in% c("Brazil", "Germany")) %>% 
+  select(-c(iso2, iso3)) %>% 
+  count(agegroup)
+```
+
+Count is a special case of summarise...
+
+---
+
+### `summarise()`: collapse values to a single one
+
+```{r}
+#| echo: true
+who_dat %>% 
+  filter(country %in% c("Brazil", "Germany")) %>% 
+  select(-c(iso2, iso3)) %>% 
+  group_by(country) %>% 
+  count(agegroup)
+```
+
+...and works excellent on grouped data!
+
+--------------
+
+## Cheat sheet to the rescue!
+
+![](dplyr-cheatsheet.png){fig-align="center"}
+
+You find cheat sheets under: **Help** > **Cheat Sheets**
+
+---
+
+## Futher options to get help
+
+- `?mutate()` or any other function
+- Google, e.g. "count observations dplyr"
+- [https://stackoverflow.com/](https://stackoverflow.com/)
+
+----
+
+
 -   Coding
+
 -   assigning names
 
 -   using functions
@@ -138,12 +407,17 @@ excellent website:
 ## Data manipulation
 
 -   Read data in various formats
+
 -   readxl, haven
 
 -   csv, rds
+
 -   Save data
+
 -   Standard folder structure
+
 -   Use prefix: e.g. `01-data.rds`
+
 -   Concept of tibble vs. data.frame. Show `View()`.
 
 ## Outline
@@ -156,14 +430,11 @@ excellent website:
 
 -   
 
-
 ## Data analysis workflow
 
 ![](https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png)
 
-```{r}
-library(tidyverse)
-```
+------------------------------------------------------------------------`{r} #| echo: true library(tidyverse)`
 
 ```{r}
 #| echo: fenced
@@ -209,3 +480,12 @@ broom::tidy(m) %>%
   mutate(p.value = scales::pvalue(p.value)) %>% 
   knitr::kable(digit = 2)
 ```
+
+## Resources
+
+-   [R for Data Science](https://r4ds.had.co.nz/index.html)
+-   [\@rstudiotipson Twitter](https://twitter.com/rstudiotips)
+-   [What they forgot to teach you about R](https://rstats.wtf/)
+-   [Happy Git with R](https://happygitwithr.com/)
+-   [Stackoverflow](https://stackoverflow.com/)
+-   [R Graphics Cookbook](https://r-graphics.org/)

@@ -480,10 +480,10 @@
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <blockquote>
-<p><strong>“If the first line of your R script is</strong><br>
-<strong><code>setwd("C:\Jenny\path\that\only\I\have")</code></strong><br>
-<strong>I will come into your office and</strong><br>
-<strong>SET YOUR COMPUTER ON FIRE <span class="emoji" data-emoji="fire">🔥</span>.”</strong><br>
+<p><strong>“If the first line of your R script is<br>
+</strong><code>setwd("C:\Jenny\path\that\only\I\have")</code><strong><br>
+</strong>I will come into your office and<strong><br>
+</strong>SET YOUR COMPUTER ON FIRE <span class="emoji" data-emoji="fire">🔥</span>.”<br>
 <em>Jenny Bryan</em></p>
 </blockquote>
 </div>
@@ -502,10 +502,10 @@
 <div class="quarto-layout-row quarto-layout-valign-top">
 <div class="quarto-layout-cell" style="flex-basis: 100.0%;justify-content: center;">
 <blockquote>
-<p><strong>“If the first line of your R script is</strong><br>
-<strong><code>rm(list = ls())</code></strong><br>
-<strong>I will come into your office and</strong><br>
-<strong>SET YOUR COMPUTER ON FIRE <span class="emoji" data-emoji="fire">🔥</span>.”</strong><br>
+<p><strong>“If the first line of your R script is<br>
+</strong><code>rm(list = ls())</code><strong><br>
+</strong>I will come into your office and<strong><br>
+</strong>SET YOUR COMPUTER ON FIRE <span class="emoji" data-emoji="fire">🔥</span>.”<br>
 <em>Jenny Bryan</em></p>
 </blockquote>
 </div>
@@ -532,6 +532,10 @@
 <h2>Project management: (3) Projects</h2>
 
 <img data-src="rstudio-workspace.png" class="r-stretch"></section>
+<section id="section-3" class="slide level2">
+<h2></h2>
+<p>And while we’re there: <img data-src="rainbows.png"></p>
+</section>
 <section id="project-management-3-projects-2" class="slide level2">
 <h2>Project management: (3) Projects</h2>
 <ul>
@@ -549,15 +553,454 @@
 <p><a href="https://rstats.wtf/" data-preview-link="true" style="text-align: center">What They Forgot to Teach You About R</a></p>
 </div>
 </section>
+<section id="steps-in-a-data-analysis-project" class="slide level2">
+<h2>Steps in a data analysis project</h2>
+<p><img data-src="data-science.png" class="absolute" style="top: 250px; left: 220px; height: 250px; "></p>
+</section>
+<section id="tidyverse-provides-tools-for-each-step" class="slide level2">
+<h2>Tidyverse provides tools for each step</h2>
+
+<img data-src="tidyverse-package-workflow.png" class="r-stretch"></section>
+<section id="loading-libraries" class="slide level2">
+<h2>Loading libraries</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="fu">library</span>(tidyverse)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>✓ ggplot2 3.3.5     ✓ purrr   0.3.4
+✓ tibble  3.1.8     ✓ dplyr   1.0.8
+✓ tidyr   1.2.0     ✓ stringr 1.4.0
+✓ readr   2.0.1     ✓ forcats 0.5.1</code></pre>
+</div>
+<div class="cell-output cell-output-stderr">
+<pre><code>── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
+x dplyr::filter() masks stats::filter()
+x dplyr::lag()    masks stats::lag()</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a><span class="co"># Read sample data</span></span>
+<span id="cb5-2"><a href="#cb5-2"></a>who_dat <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/who_clean.rds"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="our-first-graph" class="slide level2 scrollable">
+<h2>Our first graph!</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Germany"</span>, <span class="st">"United States of America"</span>, </span>
+<span id="cb6-3"><a href="#cb6-3"></a>                        <span class="st">"Brazil"</span>, <span class="st">"Afghanistan"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-4"><a href="#cb6-4"></a>  <span class="fu">group_by</span>(country, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-5"><a href="#cb6-5"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-6"><a href="#cb6-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> n)) <span class="sc">+</span> </span>
+<span id="cb6-7"><a href="#cb6-7"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> country), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb6-8"><a href="#cb6-8"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> country), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb6-9"><a href="#cb6-9"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>country, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span> </span>
+<span id="cb6-10"><a href="#cb6-10"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, </span>
+<span id="cb6-11"><a href="#cb6-11"></a>       <span class="at">y =</span> <span class="st">"N of pulmonary TB cases"</span>, </span>
+<span id="cb6-12"><a href="#cb6-12"></a>       <span class="at">color =</span> <span class="st">"Country"</span>, </span>
+<span id="cb6-13"><a href="#cb6-13"></a>       <span class="at">caption =</span> <span class="st">"Data Source: Global Tuberculosis Report"</span>) <span class="sc">+</span> </span>
+<span id="cb6-14"><a href="#cb6-14"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb6-15"><a href="#cb6-15"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"None"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<section id="dplyr-basics" class="slide level2">
+<h2>Dplyr basics:</h2>
+<ul>
+<li><code>filter()</code>: pick observations by their values</li>
+<li><code>select()</code>: pick variables by their names</li>
+<li><code>arrange()</code>: reorder the rows</li>
+<li><code>mutate()</code>: create new variables with functions of existing variables</li>
+<li><code>summarise()</code>: collapse many values down to a single summary</li>
+</ul>
+</section>
+<section id="lets-look-at-the-tb-data-again" class="slide level2">
+<h2>Let’s look at the TB data again</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>who_dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6,382 × 8
+   country     iso2  iso3   year diag         gender agegroup  value
+   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;
+ 1 Afghanistan AF    AFG    1997 sputum smear m      0-14 yrs      0
+ 2 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs    10
+ 3 Afghanistan AF    AFG    1998 sputum smear m      0-14 yrs     30
+ 4 Afghanistan AF    AFG    1998 sputum smear m      15-24 yrs   129
+ 5 Afghanistan AF    AFG    1999 sputum smear m      0-14 yrs      8
+ 6 Afghanistan AF    AFG    1999 sputum smear m      15-24 yrs    55
+ 7 Afghanistan AF    AFG    2000 sputum smear m      0-14 yrs     52
+ 8 Afghanistan AF    AFG    2000 sputum smear m      15-24 yrs   228
+ 9 Afghanistan AF    AFG    2001 sputum smear m      0-14 yrs    129
+10 Afghanistan AF    AFG    2001 sputum smear m      15-24 yrs   379
+# … with 6,372 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="pipe-operator" class="slide level2">
+<h2>Pipe operator</h2>
+
+<img data-src="magrittr.jpeg" class="r-stretch"><p>Shortcut: ⌘ + ⇧ + M / crtl + ⇧ + M</p>
+<p>You can think of it as <strong>“…and then…”</strong>.</p>
+</section>
+<section id="pipe-operator-1" class="slide level2">
+<h2>Pipe operator</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb9-2"><a href="#cb9-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb9-3"><a href="#cb9-3"></a>  <span class="fu">head</span>(<span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  country iso2  iso3   year diag         gender agegroup value
+  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;    &lt;int&gt;
+1 Brazil  BR    BRA    1999 sputum smear m      0-14 yrs   301</code></pre>
+</div>
+</div>
+<p><span class="emoji" data-emoji="smirk">😏</span></p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1"></a><span class="fu">head</span>(<span class="fu">filter</span>(who_dat, country <span class="sc">==</span> <span class="st">"Brazil"</span>), <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 8
+  country iso2  iso3   year diag         gender agegroup value
+  &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;    &lt;int&gt;
+1 Brazil  BR    BRA    1999 sputum smear m      0-14 yrs   301</code></pre>
+</div>
+</div>
+<p><span class="emoji" data-emoji="weary">😩</span></p>
+</section>
 <section class="slide level2">
 
+<h3 id="filter-pick-observations-by-their-values"><code>filter()</code>: pick observations by their values</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb13-2"><a href="#cb13-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 28 × 8
+   country iso2  iso3   year diag         gender agegroup  value
+   &lt;chr&gt;   &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;
+ 1 Brazil  BR    BRA    1999 sputum smear m      0-14 yrs    301
+ 2 Brazil  BR    BRA    1999 sputum smear m      15-24 yrs  3662
+ 3 Brazil  BR    BRA    2000 sputum smear m      0-14 yrs   1894
+ 4 Brazil  BR    BRA    2000 sputum smear m      15-24 yrs  7268
+ 5 Brazil  BR    BRA    2001 sputum smear m      0-14 yrs    468
+ 6 Brazil  BR    BRA    2001 sputum smear m      15-24 yrs  4455
+ 7 Brazil  BR    BRA    2002 sputum smear m      0-14 yrs    344
+ 8 Brazil  BR    BRA    2002 sputum smear m      15-24 yrs  4695
+ 9 Brazil  BR    BRA    2003 sputum smear m      0-14 yrs    382
+10 Brazil  BR    BRA    2003 sputum smear m      15-24 yrs  4485
+# … with 18 more rows</code></pre>
+</div>
+</div>
 </section>
-<section id="outline" class="slide level2">
-<h2>Outline</h2>
+<section id="logical-operators" class="slide level2">
+<h2>Logical operators</h2>
+
+<img data-src="logicals.png" class="r-stretch"><p>Special case: <code>is.na()</code></p>
+</section>
+<section class="slide level2">
+
+<h3 id="select-pick-variables-by-their-names"><code>select()</code>: pick variables by their names</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb15-2"><a href="#cb15-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb15-3"><a href="#cb15-3"></a>  <span class="fu">select</span>(country, year, diag, gender, agegroup, value)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 28 × 6
+   country  year diag         gender agegroup  value
+   &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;
+ 1 Brazil   1999 sputum smear m      0-14 yrs    301
+ 2 Brazil   1999 sputum smear m      15-24 yrs  3662
+ 3 Brazil   2000 sputum smear m      0-14 yrs   1894
+ 4 Brazil   2000 sputum smear m      15-24 yrs  7268
+ 5 Brazil   2001 sputum smear m      0-14 yrs    468
+ 6 Brazil   2001 sputum smear m      15-24 yrs  4455
+ 7 Brazil   2002 sputum smear m      0-14 yrs    344
+ 8 Brazil   2002 sputum smear m      15-24 yrs  4695
+ 9 Brazil   2003 sputum smear m      0-14 yrs    382
+10 Brazil   2003 sputum smear m      15-24 yrs  4485
+# … with 18 more rows</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1"></a><span class="co"># You could also use select(-c(iso2, iso3))</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Useful “helpers” with select: <code>starts_with()</code>, <code>contains()</code></p>
+</section>
+<section class="slide level2">
+
+<h3 id="arrange-reorder-the-rows"><code>arrange()</code>: reorder the rows</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb18-2"><a href="#cb18-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-3"><a href="#cb18-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb18-4"><a href="#cb18-4"></a>  <span class="fu">arrange</span>(value) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 28 × 6
+   country  year diag         gender agegroup value
+   &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;    &lt;int&gt;
+ 1 Brazil   2012 sputum smear m      0-14 yrs   277
+ 2 Brazil   2008 sputum smear m      0-14 yrs   298
+ 3 Brazil   2010 sputum smear m      0-14 yrs   298
+ 4 Brazil   1999 sputum smear m      0-14 yrs   301
+ 5 Brazil   2005 sputum smear m      0-14 yrs   317
+ 6 Brazil   2009 sputum smear m      0-14 yrs   328
+ 7 Brazil   2011 sputum smear m      0-14 yrs   336
+ 8 Brazil   2004 sputum smear m      0-14 yrs   337
+ 9 Brazil   2006 sputum smear m      0-14 yrs   343
+10 Brazil   2002 sputum smear m      0-14 yrs   344
+# … with 18 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="arrange-reorder-the-rows-1"><code>arrange()</code>: reorder the rows</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb20-2"><a href="#cb20-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-3"><a href="#cb20-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb20-4"><a href="#cb20-4"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(value)) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 28 × 6
+   country  year diag         gender agegroup  value
+   &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;
+ 1 Brazil   2000 sputum smear m      15-24 yrs  7268
+ 2 Brazil   2005 sputum smear m      15-24 yrs  5074
+ 3 Brazil   2004 sputum smear m      15-24 yrs  5041
+ 4 Brazil   2012 sputum smear m      15-24 yrs  5027
+ 5 Brazil   2011 sputum smear m      15-24 yrs  4877
+ 6 Brazil   2006 sputum smear m      15-24 yrs  4783
+ 7 Brazil   2002 sputum smear m      15-24 yrs  4695
+ 8 Brazil   2009 sputum smear m      15-24 yrs  4621
+ 9 Brazil   2003 sputum smear m      15-24 yrs  4485
+10 Brazil   2001 sputum smear m      15-24 yrs  4455
+# … with 18 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="mutate-create-new-variables"><code>mutate()</code>: create new variables</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb22-2"><a href="#cb22-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-3"><a href="#cb22-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb22-4"><a href="#cb22-4"></a>  <span class="fu">mutate</span>(<span class="at">total_n_cases =</span> <span class="fu">sum</span>(value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 28 × 7
+   country  year diag         gender agegroup  value total_n_cases
+   &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;         &lt;int&gt;
+ 1 Brazil   1999 sputum smear m      0-14 yrs    301         73522
+ 2 Brazil   1999 sputum smear m      15-24 yrs  3662         73522
+ 3 Brazil   2000 sputum smear m      0-14 yrs   1894         73522
+ 4 Brazil   2000 sputum smear m      15-24 yrs  7268         73522
+ 5 Brazil   2001 sputum smear m      0-14 yrs    468         73522
+ 6 Brazil   2001 sputum smear m      15-24 yrs  4455         73522
+ 7 Brazil   2002 sputum smear m      0-14 yrs    344         73522
+ 8 Brazil   2002 sputum smear m      15-24 yrs  4695         73522
+ 9 Brazil   2003 sputum smear m      0-14 yrs    382         73522
+10 Brazil   2003 sputum smear m      15-24 yrs  4485         73522
+# … with 18 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="mutate-create-new-variables-1"><code>mutate()</code>: create new variables</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb24-2"><a href="#cb24-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-3"><a href="#cb24-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb24-4"><a href="#cb24-4"></a>  <span class="fu">mutate</span>(<span class="at">mean_n_cases =</span> <span class="fu">mean</span>(value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 28 × 7
+   country  year diag         gender agegroup  value mean_n_cases
+   &lt;chr&gt;   &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;        &lt;dbl&gt;
+ 1 Brazil   1999 sputum smear m      0-14 yrs    301        2626.
+ 2 Brazil   1999 sputum smear m      15-24 yrs  3662        2626.
+ 3 Brazil   2000 sputum smear m      0-14 yrs   1894        2626.
+ 4 Brazil   2000 sputum smear m      15-24 yrs  7268        2626.
+ 5 Brazil   2001 sputum smear m      0-14 yrs    468        2626.
+ 6 Brazil   2001 sputum smear m      15-24 yrs  4455        2626.
+ 7 Brazil   2002 sputum smear m      0-14 yrs    344        2626.
+ 8 Brazil   2002 sputum smear m      15-24 yrs  4695        2626.
+ 9 Brazil   2003 sputum smear m      0-14 yrs    382        2626.
+10 Brazil   2003 sputum smear m      15-24 yrs  4485        2626.
+# … with 18 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="summarise-collapse-values-to-a-single-one"><code>summarise()</code>: collapse values to a single one</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb26-2"><a href="#cb26-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-3"><a href="#cb26-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb26-4"><a href="#cb26-4"></a>  <span class="fu">summarise</span>(<span class="at">total_n_cases =</span> <span class="fu">sum</span>(value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1 × 1
+  total_n_cases
+          &lt;int&gt;
+1         73522</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="summarise-collapse-values-to-a-single-one-1"><code>summarise()</code>: collapse values to a single one</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb28-2"><a href="#cb28-2"></a>  <span class="fu">filter</span>(country <span class="sc">==</span> <span class="st">"Brazil"</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-3"><a href="#cb28-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-4"><a href="#cb28-4"></a>  <span class="fu">group_by</span>(year) <span class="sc">%&gt;%</span> </span>
+<span id="cb28-5"><a href="#cb28-5"></a>  <span class="fu">summarise</span>(<span class="at">total_n_cases =</span> <span class="fu">sum</span>(value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 14 × 2
+    year total_n_cases
+   &lt;int&gt;         &lt;int&gt;
+ 1  1999          3963
+ 2  2000          9162
+ 3  2001          4923
+ 4  2002          5039
+ 5  2003          4867
+ 6  2004          5378
+ 7  2005          5391
+ 8  2006          5126
+ 9  2007          4770
+10  2008          4734
+11  2009          4949
+12  2010          4703
+13  2011          5213
+14  2012          5304</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="summarise-collapse-values-to-a-single-one-2"><code>summarise()</code>: collapse values to a single one</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Brazil"</span>, <span class="st">"Germany"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-3"><a href="#cb30-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-4"><a href="#cb30-4"></a>  <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-5"><a href="#cb30-5"></a>  <span class="fu">summarise</span>(<span class="at">total_n_cases =</span> <span class="fu">sum</span>(value))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  country total_n_cases
+  &lt;chr&gt;           &lt;int&gt;
+1 Brazil          73522
+2 Germany          1597</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="summarise-collapse-values-to-a-single-one-3"><code>summarise()</code>: collapse values to a single one</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb32-2"><a href="#cb32-2"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Brazil"</span>, <span class="st">"Germany"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-3"><a href="#cb32-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-4"><a href="#cb32-4"></a>  <span class="fu">group_by</span>(country, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-5"><a href="#cb32-5"></a>  <span class="fu">summarise</span>(<span class="at">total_n_cases =</span> <span class="fu">sum</span>(value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb32-6"><a href="#cb32-6"></a>  <span class="fu">print</span>(<span class="at">n =</span> <span class="dv">31</span>) <span class="co"># So that all rows are shown to us</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 31 × 3
+# Groups:   country [2]
+   country  year total_n_cases
+   &lt;chr&gt;   &lt;int&gt;         &lt;int&gt;
+ 1 Brazil   1999          3963
+ 2 Brazil   2000          9162
+ 3 Brazil   2001          4923
+ 4 Brazil   2002          5039
+ 5 Brazil   2003          4867
+ 6 Brazil   2004          5378
+ 7 Brazil   2005          5391
+ 8 Brazil   2006          5126
+ 9 Brazil   2007          4770
+10 Brazil   2008          4734
+11 Brazil   2009          4949
+12 Brazil   2010          4703
+13 Brazil   2011          5213
+14 Brazil   2012          5304
+15 Germany  1995           193
+16 Germany  1996           201
+17 Germany  1997           177
+18 Germany  1998           188
+19 Germany  1999           158
+20 Germany  2001             6
+21 Germany  2002            37
+22 Germany  2003            70
+23 Germany  2004            68
+24 Germany  2005            65
+25 Germany  2006            80
+26 Germany  2007           118
+27 Germany  2008            42
+28 Germany  2009            50
+29 Germany  2010            50
+30 Germany  2011            43
+31 Germany  2012            51</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<h3 id="summarise-collapse-values-to-a-single-one-4"><code>summarise()</code>: collapse values to a single one</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="#cb34-2"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Brazil"</span>, <span class="st">"Germany"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3"><a href="#cb34-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-4"><a href="#cb34-4"></a>  <span class="fu">count</span>(agegroup)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 2
+  agegroup      n
+  &lt;chr&gt;     &lt;int&gt;
+1 0-14 yrs     31
+2 15-24 yrs    31</code></pre>
+</div>
+</div>
+<p>Count is a special case of summarise…</p>
+</section>
+<section class="slide level2">
+
+<h3 id="summarise-collapse-values-to-a-single-one-5"><code>summarise()</code>: collapse values to a single one</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="#cb36-2"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Brazil"</span>, <span class="st">"Germany"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-3"><a href="#cb36-3"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(iso2, iso3)) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-4"><a href="#cb36-4"></a>  <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-5"><a href="#cb36-5"></a>  <span class="fu">count</span>(agegroup)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 4 × 3
+# Groups:   country [2]
+  country agegroup      n
+  &lt;chr&gt;   &lt;chr&gt;     &lt;int&gt;
+1 Brazil  0-14 yrs     14
+2 Brazil  15-24 yrs    14
+3 Germany 0-14 yrs     17
+4 Germany 15-24 yrs    17</code></pre>
+</div>
+</div>
+<p>…and works excellent on grouped data!</p>
+</section>
+<section id="cheat-sheet-to-the-rescue" class="slide level2">
+<h2>Cheat sheet to the rescue!</h2>
+
+<img data-src="dplyr-cheatsheet.png" class="r-stretch quarto-figure-center"><p>You find cheat sheets under: <strong>Help</strong> &gt; <strong>Cheat Sheets</strong></p>
+</section>
+<section id="futher-options-to-get-help" class="slide level2">
+<h2>Futher options to get help</h2>
 <ul>
-<li><p>Use Projects</p></li>
-<li><p>Folder structures (data, scripts, graphs)</p></li>
-<li><p>Libraries</p></li>
+<li><code>?mutate()</code> or any other function</li>
+<li>Google, e.g.&nbsp;“count observations dplyr”</li>
+<li><a href="https://stackoverflow.com/">https://stackoverflow.com/</a></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<ul>
 <li><p>Coding</p></li>
 <li><p>assigning names</p></li>
 <li><p>using functions</p></li>
@@ -577,7 +1020,7 @@
 <li><p>Concept of tibble vs.&nbsp;data.frame. Show <code>View()</code>.</p></li>
 </ul>
 </section>
-<section id="outline-1" class="slide level2">
+<section id="outline" class="slide level2">
 <h2>Outline</h2>
 <ul>
 <li><p>Use <code>%&gt;%</code> for readability</p></li>
@@ -589,13 +1032,11 @@
 <section id="data-analysis-workflow" class="slide level2">
 <h2>Data analysis workflow</h2>
 
-<img data-src="https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png" class="r-stretch"><div class="cell">
-
-</div>
+<img data-src="https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png" class="r-stretch"><p>————————————————————————<code>{r} #| echo: true library(tidyverse)</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb1-1"><a href="#cb1-1"></a><span class="in">```{r}</span></span>
-<span id="cb1-2"><a href="#cb1-2"></a><span class="dv">2</span><span class="sc">+</span><span class="dv">2</span></span>
-<span id="cb1-3"><a href="#cb1-3"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb38-1"><a href="#cb38-1"></a><span class="in">```{r}</span></span>
+<span id="cb38-2"><a href="#cb38-2"></a><span class="dv">2</span><span class="sc">+</span><span class="dv">2</span></span>
+<span id="cb38-3"><a href="#cb38-3"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4</code></pre>
 </div>
@@ -620,22 +1061,22 @@
 </section>
 <section id="linear-regression-1" class="slide level2">
 <h2>Linear regression (1)</h2>
-<h3 id="section-3"></h3>
+<h3 id="section-4"></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a>mpg <span class="sc">%&gt;%</span> </span>
-<span id="cb3-2"><a href="#cb3-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> hwy, <span class="at">y =</span> displ)) <span class="sc">+</span> </span>
-<span id="cb3-3"><a href="#cb3-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb3-4"><a href="#cb3-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>mpg <span class="sc">%&gt;%</span> </span>
+<span id="cb40-2"><a href="#cb40-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> hwy, <span class="at">y =</span> displ)) <span class="sc">+</span> </span>
+<span id="cb40-3"><a href="#cb40-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb40-4"><a href="#cb40-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="day1_files/figure-revealjs/unnamed-chunk-3-1.png" width="960" class="r-stretch"></section>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section>
 <section id="linear-regression-2" class="slide level2">
 <h2>Linear regression (2)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(displ <span class="sc">~</span> hwy, <span class="at">data =</span> mpg) <span class="co"># generate linear regression model</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(m) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-3"><a href="#cb4-3"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> scales<span class="sc">::</span><span class="fu">pvalue</span>(p.value)) <span class="sc">%&gt;%</span> </span>
-<span id="cb4-4"><a href="#cb4-4"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digit =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(displ <span class="sc">~</span> hwy, <span class="at">data =</span> mpg) <span class="co"># generate linear regression model</span></span>
+<span id="cb41-2"><a href="#cb41-2"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(m) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-3"><a href="#cb41-3"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> scales<span class="sc">::</span><span class="fu">pvalue</span>(p.value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb41-4"><a href="#cb41-4"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digit =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table>
 <thead>
@@ -666,6 +1107,17 @@
 </table>
 </div>
 </div>
+</section>
+<section id="resources" class="slide level2">
+<h2>Resources</h2>
+<ul>
+<li><a href="https://r4ds.had.co.nz/index.html">R for Data Science</a></li>
+<li><a href="https://twitter.com/rstudiotips">@rstudiotipson Twitter</a></li>
+<li><a href="https://rstats.wtf/">What they forgot to teach you about R</a></li>
+<li><a href="https://happygitwithr.com/">Happy Git with R</a></li>
+<li><a href="https://stackoverflow.com/">Stackoverflow</a></li>
+<li><a href="https://r-graphics.org/">R Graphics Cookbook</a></li>
+</ul>
 <div class="footer footer-default">
 
 </div>
