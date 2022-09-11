@@ -985,6 +985,30 @@ x dplyr::lag()    masks stats::lag()</code></pre>
 </div>
 <p>…and works excellent on grouped data!</p>
 </section>
+<section id="our-first-graph-1" class="slide level2 scrollable">
+<h2>Our first graph!</h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb38-2"><a href="#cb38-2"></a>  <span class="fu">filter</span>(country <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">"Germany"</span>, <span class="st">"United States of America"</span>, </span>
+<span id="cb38-3"><a href="#cb38-3"></a>                        <span class="st">"Brazil"</span>, <span class="st">"Afghanistan"</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-4"><a href="#cb38-4"></a>  <span class="fu">group_by</span>(country, year) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-5"><a href="#cb38-5"></a>  <span class="fu">summarise</span>(<span class="at">n =</span> <span class="fu">sum</span>(value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb38-6"><a href="#cb38-6"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> year, <span class="at">y =</span> n)) <span class="sc">+</span> </span>
+<span id="cb38-7"><a href="#cb38-7"></a>  <span class="fu">geom_line</span>(<span class="fu">aes</span>(<span class="at">color =</span> country), <span class="at">size =</span> <span class="dv">1</span>) <span class="sc">+</span> </span>
+<span id="cb38-8"><a href="#cb38-8"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> country), <span class="at">shape =</span> <span class="dv">21</span>, <span class="at">fill =</span> <span class="st">"white"</span>, <span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb38-9"><a href="#cb38-9"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>country, <span class="at">scales =</span> <span class="st">"free_y"</span>) <span class="sc">+</span> </span>
+<span id="cb38-10"><a href="#cb38-10"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Year"</span>, </span>
+<span id="cb38-11"><a href="#cb38-11"></a>       <span class="at">y =</span> <span class="st">"N of pulmonary TB cases"</span>, </span>
+<span id="cb38-12"><a href="#cb38-12"></a>       <span class="at">color =</span> <span class="st">"Country"</span>, </span>
+<span id="cb38-13"><a href="#cb38-13"></a>       <span class="at">caption =</span> <span class="st">"Data Source: Global Tuberculosis Report"</span>) <span class="sc">+</span> </span>
+<span id="cb38-14"><a href="#cb38-14"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span> </span>
+<span id="cb38-15"><a href="#cb38-15"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"None"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-19-1.png" width="960" class="r-stretch"></section>
 <section id="cheat-sheet-to-the-rescue" class="slide level2">
 <h2>Cheat sheet to the rescue!</h2>
 
@@ -995,8 +1019,223 @@ x dplyr::lag()    masks stats::lag()</code></pre>
 <ul>
 <li><code>?mutate()</code> or any other function</li>
 <li>Google, e.g.&nbsp;“count observations dplyr”</li>
-<li><a href="https://stackoverflow.com/">https://stackoverflow.com/</a></li>
+<li><a href="https://stackoverflow.com/" class="uri">https://stackoverflow.com/</a></li>
 </ul>
+</section>
+<section id="outline-day-2" class="slide level2">
+<h2>Outline Day 2</h2>
+<ul>
+<li>Repeat dplyr basics</li>
+<li>Join datasets</li>
+<li>Use the <code>forcats</code> package</li>
+<li>Create first graph using <code>ggplot2</code></li>
+</ul>
+</section>
+<section class="slide level2">
+
+<p>We want to look at the TB data in relation to the population. The Gapminder dataset provides the data we need.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb39"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1"></a>pop <span class="ot">&lt;-</span> <span class="fu">read_rds</span>(<span class="st">"data/gapminder_data.rds"</span>)</span>
+<span id="cb39-2"><a href="#cb39-2"></a></span>
+<span id="cb39-3"><a href="#cb39-3"></a>pop</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 1,704 × 6
+   country     continent  year lifeExp      pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       1952    28.8  8425333      779.
+ 2 Afghanistan Asia       1957    30.3  9240934      821.
+ 3 Afghanistan Asia       1962    32.0 10267083      853.
+ 4 Afghanistan Asia       1967    34.0 11537966      836.
+ 5 Afghanistan Asia       1972    36.1 13079460      740.
+ 6 Afghanistan Asia       1977    38.4 14880372      786.
+ 7 Afghanistan Asia       1982    39.9 12881816      978.
+ 8 Afghanistan Asia       1987    40.8 13867957      852.
+ 9 Afghanistan Asia       1992    41.7 16317921      649.
+10 Afghanistan Asia       1997    41.8 22227415      635.
+# … with 1,694 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>We will only look at the most recent year, which is 2007.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>pop07 <span class="ot">&lt;-</span> pop <span class="sc">%&gt;%</span> </span>
+<span id="cb41-2"><a href="#cb41-2"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>)</span>
+<span id="cb41-3"><a href="#cb41-3"></a></span>
+<span id="cb41-4"><a href="#cb41-4"></a>pop07</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 142 × 6
+   country     continent  year lifeExp       pop gdpPercap
+   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;     &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan Asia       2007    43.8  31889923      975.
+ 2 Albania     Europe     2007    76.4   3600523     5937.
+ 3 Algeria     Africa     2007    72.3  33333216     6223.
+ 4 Angola      Africa     2007    42.7  12420476     4797.
+ 5 Argentina   Americas   2007    75.3  40301927    12779.
+ 6 Australia   Oceania    2007    81.2  20434176    34435.
+ 7 Austria     Europe     2007    79.8   8199783    36126.
+ 8 Bahrain     Asia       2007    75.6    708573    29796.
+ 9 Bangladesh  Asia       2007    64.1 150448339     1391.
+10 Belgium     Europe     2007    79.4  10392226    33693.
+# … with 132 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>We still have more than one observation per year in our TB dataset. Lets use summarise to collapse to one value per country.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb43"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1"></a>tb07 <span class="ot">&lt;-</span> who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb43-2"><a href="#cb43-2"></a>  <span class="fu">filter</span>(year <span class="sc">==</span> <span class="dv">2007</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-3"><a href="#cb43-3"></a>  <span class="fu">group_by</span>(country) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-4"><a href="#cb43-4"></a>  <span class="fu">summarise</span>(<span class="at">tb_cases =</span> <span class="fu">sum</span>(value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb43-5"><a href="#cb43-5"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb43-6"><a href="#cb43-6"></a></span>
+<span id="cb43-7"><a href="#cb43-7"></a>tb07</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 182 × 2
+   country             tb_cases
+   &lt;chr&gt;                  &lt;int&gt;
+ 1 Afghanistan             1042
+ 2 Albania                   19
+ 3 Algeria                 1483
+ 4 Angola                  3308
+ 5 Antigua and Barbuda        0
+ 6 Argentina                733
+ 7 Armenia                   82
+ 8 Australia                 33
+ 9 Austria                   13
+10 Bahamas                    3
+# … with 172 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>Now we can join the 2 datasets together…</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb45"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1"></a>data07 <span class="ot">&lt;-</span> tb07 <span class="sc">%&gt;%</span> </span>
+<span id="cb45-2"><a href="#cb45-2"></a>  <span class="fu">left_join</span>(pop07)</span>
+<span id="cb45-3"><a href="#cb45-3"></a></span>
+<span id="cb45-4"><a href="#cb45-4"></a>data07</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 182 × 7
+   country             tb_cases continent  year lifeExp      pop gdpPercap
+   &lt;chr&gt;                  &lt;int&gt; &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+ 1 Afghanistan             1042 Asia       2007    43.8 31889923      975.
+ 2 Albania                   19 Europe     2007    76.4  3600523     5937.
+ 3 Algeria                 1483 Africa     2007    72.3 33333216     6223.
+ 4 Angola                  3308 Africa     2007    42.7 12420476     4797.
+ 5 Antigua and Barbuda        0 &lt;NA&gt;         NA    NA         NA       NA 
+ 6 Argentina                733 Americas   2007    75.3 40301927    12779.
+ 7 Armenia                   82 &lt;NA&gt;         NA    NA         NA       NA 
+ 8 Australia                 33 Oceania    2007    81.2 20434176    34435.
+ 9 Austria                   13 Europe     2007    79.8  8199783    36126.
+10 Bahamas                    3 &lt;NA&gt;         NA    NA         NA       NA 
+# … with 172 more rows</code></pre>
+</div>
+</div>
+</section>
+<section class="slide level2">
+
+<p>…and calculate the TB incidence per 100’000 persons.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb47"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1"></a>data07 <span class="ot">&lt;-</span> data07 <span class="sc">%&gt;%</span> </span>
+<span id="cb47-2"><a href="#cb47-2"></a>  <span class="fu">select</span>(<span class="sc">-</span>lifeExp, <span class="sc">-</span>gdpPercap) <span class="sc">%&gt;%</span> <span class="co"># We don't need those 2 variables</span></span>
+<span id="cb47-3"><a href="#cb47-3"></a>  <span class="fu">mutate</span>(<span class="at">tb_incidence =</span> tb_cases <span class="sc">/</span> pop <span class="sc">*</span> <span class="dv">100000</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb47-4"><a href="#cb47-4"></a>  <span class="fu">filter</span>(<span class="sc">!</span><span class="fu">is.na</span>(tb_incidence))</span>
+<span id="cb47-5"><a href="#cb47-5"></a>  </span>
+<span id="cb47-6"><a href="#cb47-6"></a></span>
+<span id="cb47-7"><a href="#cb47-7"></a></span>
+<span id="cb47-8"><a href="#cb47-8"></a>data07</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 113 × 6
+   country     tb_cases continent  year       pop tb_incidence
+   &lt;chr&gt;          &lt;int&gt; &lt;fct&gt;     &lt;int&gt;     &lt;int&gt;        &lt;dbl&gt;
+ 1 Afghanistan     1042 Asia       2007  31889923        3.27 
+ 2 Albania           19 Europe     2007   3600523        0.528
+ 3 Algeria         1483 Africa     2007  33333216        4.45 
+ 4 Angola          3308 Africa     2007  12420476       26.6  
+ 5 Argentina        733 Americas   2007  40301927        1.82 
+ 6 Australia         33 Oceania    2007  20434176        0.161
+ 7 Austria           13 Europe     2007   8199783        0.159
+ 8 Bahrain            8 Asia       2007    708573        1.13 
+ 9 Bangladesh     10733 Asia       2007 150448339        7.13 
+10 Belgium           25 Europe     2007  10392226        0.241
+# … with 103 more rows</code></pre>
+</div>
+</div>
+</section>
+<section id="section-4" class="slide level2 scrollable">
+<h2></h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb49"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb49-1"><a href="#cb49-1"></a>data07 <span class="sc">%&gt;%</span> </span>
+<span id="cb49-2"><a href="#cb49-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> country, <span class="at">x =</span> tb_incidence)) <span class="sc">+</span> </span>
+<span id="cb49-3"><a href="#cb49-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb49-4"><a href="#cb49-4"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Pulmonary TB, Incidence per 100'000 people (in 2007)"</span>, </span>
+<span id="cb49-5"><a href="#cb49-5"></a>       <span class="at">y =</span> <span class="st">"Counry"</span>, </span>
+<span id="cb49-6"><a href="#cb49-6"></a>       <span class="at">caption =</span> <span class="st">"WHO TB report"</span>) <span class="sc">+</span> </span>
+<span id="cb49-7"><a href="#cb49-7"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-25-1.png" width="960" class="r-stretch"></section>
+<section id="section-5" class="slide level2 scrollable">
+<h2></h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb50"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1"></a>data07 <span class="sc">%&gt;%</span> </span>
+<span id="cb50-2"><a href="#cb50-2"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">fct_reorder</span>(country, tb_incidence)) <span class="sc">%&gt;%</span> </span>
+<span id="cb50-3"><a href="#cb50-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> country, <span class="at">x =</span> tb_incidence)) <span class="sc">+</span> </span>
+<span id="cb50-4"><a href="#cb50-4"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb50-5"><a href="#cb50-5"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span> </span>
+<span id="cb50-6"><a href="#cb50-6"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Pulmonary TB, TB Incidence per 100'000 people (in 2007)"</span>, </span>
+<span id="cb50-7"><a href="#cb50-7"></a>       <span class="at">y =</span> <span class="st">"Counry"</span>, </span>
+<span id="cb50-8"><a href="#cb50-8"></a>       <span class="at">caption =</span> <span class="st">"WHO TB report"</span>) <span class="sc">+</span> </span>
+<span id="cb50-9"><a href="#cb50-9"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-26-1.png" width="960" class="r-stretch"></section>
+<section id="section-6" class="slide level2 scrollable">
+<h2></h2>
+<div class="cell">
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb51"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1"></a>data07 <span class="sc">%&gt;%</span> </span>
+<span id="cb51-2"><a href="#cb51-2"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">fct_reorder</span>(country, tb_incidence)) <span class="sc">%&gt;%</span> </span>
+<span id="cb51-3"><a href="#cb51-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> country, <span class="at">x =</span> tb_incidence)) <span class="sc">+</span> </span>
+<span id="cb51-4"><a href="#cb51-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> continent)) <span class="sc">+</span> </span>
+<span id="cb51-5"><a href="#cb51-5"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb51-6"><a href="#cb51-6"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">check.overlap =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span> </span>
+<span id="cb51-7"><a href="#cb51-7"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Pulmonary TB, Incidence per 100'000 people (in 2007)"</span>, </span>
+<span id="cb51-8"><a href="#cb51-8"></a>       <span class="at">y =</span> <span class="st">"Counry"</span>, </span>
+<span id="cb51-9"><a href="#cb51-9"></a>       <span class="at">caption =</span> <span class="st">"WHO TB report"</span>, </span>
+<span id="cb51-10"><a href="#cb51-10"></a>       <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span> </span>
+<span id="cb51-11"><a href="#cb51-11"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
+</div>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-27-1.png" width="960" class="r-stretch"></section>
+<section class="slide level2">
+
+<p>For those who are surprised about the low incidence:<br>
+Remeber our TB dataset only includes new lung-TB cases of men &lt;25 years:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb52"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1"></a>who_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb52-2"><a href="#cb52-2"></a>  <span class="fu">count</span>(gender, agegroup)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 3
+  gender agegroup      n
+  &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;
+1 m      0-14 yrs   3173
+2 m      15-24 yrs  3209</code></pre>
+</div>
+</div>
 </section>
 <section class="slide level2">
 
@@ -1034,9 +1273,9 @@ x dplyr::lag()    masks stats::lag()</code></pre>
 
 <img data-src="https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png" class="r-stretch"><p>————————————————————————<code>{r} #| echo: true library(tidyverse)</code></p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb38"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb38-1"><a href="#cb38-1"></a><span class="in">```{r}</span></span>
-<span id="cb38-2"><a href="#cb38-2"></a><span class="dv">2</span><span class="sc">+</span><span class="dv">2</span></span>
-<span id="cb38-3"><a href="#cb38-3"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb54-1"><a href="#cb54-1"></a><span class="in">```{r}</span></span>
+<span id="cb54-2"><a href="#cb54-2"></a><span class="dv">2</span><span class="sc">+</span><span class="dv">2</span></span>
+<span id="cb54-3"><a href="#cb54-3"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 4</code></pre>
 </div>
@@ -1061,22 +1300,22 @@ x dplyr::lag()    masks stats::lag()</code></pre>
 </section>
 <section id="linear-regression-1" class="slide level2">
 <h2>Linear regression (1)</h2>
-<h3 id="section-4"></h3>
+<h3 id="section-7"></h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb40"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1"></a>mpg <span class="sc">%&gt;%</span> </span>
-<span id="cb40-2"><a href="#cb40-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> hwy, <span class="at">y =</span> displ)) <span class="sc">+</span> </span>
-<span id="cb40-3"><a href="#cb40-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb40-4"><a href="#cb40-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>mpg <span class="sc">%&gt;%</span> </span>
+<span id="cb56-2"><a href="#cb56-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> hwy, <span class="at">y =</span> displ)) <span class="sc">+</span> </span>
+<span id="cb56-3"><a href="#cb56-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb56-4"><a href="#cb56-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 
 </div>
-<img data-src="day1_files/figure-revealjs/unnamed-chunk-20-1.png" width="960" class="r-stretch"></section>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
 <section id="linear-regression-2" class="slide level2">
 <h2>Linear regression (2)</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb41"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(displ <span class="sc">~</span> hwy, <span class="at">data =</span> mpg) <span class="co"># generate linear regression model</span></span>
-<span id="cb41-2"><a href="#cb41-2"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(m) <span class="sc">%&gt;%</span> </span>
-<span id="cb41-3"><a href="#cb41-3"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> scales<span class="sc">::</span><span class="fu">pvalue</span>(p.value)) <span class="sc">%&gt;%</span> </span>
-<span id="cb41-4"><a href="#cb41-4"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digit =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(displ <span class="sc">~</span> hwy, <span class="at">data =</span> mpg) <span class="co"># generate linear regression model</span></span>
+<span id="cb57-2"><a href="#cb57-2"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(m) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-3"><a href="#cb57-3"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> scales<span class="sc">::</span><span class="fu">pvalue</span>(p.value)) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-4"><a href="#cb57-4"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digit =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <table>
 <thead>

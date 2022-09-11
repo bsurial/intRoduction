@@ -182,7 +182,7 @@ who_dat %>%
 who_dat
 ```
 
----
+------------------------------------------------------------------------
 
 ## Pipe operator
 
@@ -192,8 +192,7 @@ Shortcut: ⌘ + ⇧ + M / crtl + ⇧ + M
 
 You can think of it as **"...and then..."**.
 
----
-
+------------------------------------------------------------------------
 
 ## Pipe operator
 
@@ -206,16 +205,14 @@ who_dat %>%
 
 :smirk:
 
-
-
 ```{r}
 #| echo: true
 head(filter(who_dat, country == "Brazil"), 1)
 ```
 
 :weary:
----
 
+---
 
 ### `filter()`: pick observations by their values
 
@@ -246,7 +243,7 @@ who_dat %>%
 
 Useful "helpers" with select: `starts_with()`, `contains()`
 
----
+------------------------------------------------------------------------
 
 ### `arrange()`: reorder the rows
 
@@ -360,7 +357,7 @@ who_dat %>%
 
 Count is a special case of summarise...
 
----
+------------------------------------------------------------------------
 
 ### `summarise()`: collapse values to a single one
 
@@ -375,23 +372,201 @@ who_dat %>%
 
 ...and works excellent on grouped data!
 
---------------
+------------------------------------------------------------------------
+
+## Our first graph! {.scrollable}
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "Show the code"
+who_dat %>% 
+  filter(country %in% c("Germany", "United States of America", 
+                        "Brazil", "Afghanistan")) %>% 
+  group_by(country, year) %>% 
+  summarise(n = sum(value)) %>% 
+  ggplot(aes(x = year, y = n)) + 
+  geom_line(aes(color = country), size = 1) + 
+  geom_point(aes(color = country), shape = 21, fill = "white", size = 3) + 
+  facet_wrap(~country, scales = "free_y") + 
+  labs(x = "Year", 
+       y = "N of pulmonary TB cases", 
+       color = "Country", 
+       caption = "Data Source: Global Tuberculosis Report") + 
+  theme_minimal() + 
+  theme(legend.position = "None")
+
+```
+
+------------------------------------------------------------------------
+
 
 ## Cheat sheet to the rescue!
 
 ![](dplyr-cheatsheet.png){fig-align="center"}
 
-You find cheat sheets under: **Help** > **Cheat Sheets**
+You find cheat sheets under: **Help** \> **Cheat Sheets**
 
----
+------------------------------------------------------------------------
 
 ## Futher options to get help
 
-- `?mutate()` or any other function
-- Google, e.g. "count observations dplyr"
-- [https://stackoverflow.com/](https://stackoverflow.com/)
+-   `?mutate()` or any other function
+-   Google, e.g. "count observations dplyr"
+-   <https://stackoverflow.com/>
+
+------------------------------------------------------------------------
+
+
+## Outline Day 2
+
+-   Repeat dplyr basics
+-   Join datasets
+-   Use the `forcats` package
+-   Create first graph using `ggplot2`
+
 
 ----
+
+
+We want to look at the TB data in relation to the population. The Gapminder
+dataset provides the data we need.
+
+```{r}
+#| echo: true
+pop <- read_rds("data/gapminder_data.rds")
+
+pop
+```
+
+---
+
+We will only look at the most recent year, which is 2007.
+
+```{r}
+#| echo: true
+pop07 <- pop %>% 
+  filter(year == 2007)
+
+pop07
+```
+
+---
+
+We still have more than one observation per year in our TB dataset. 
+Lets use summarise to collapse to one value per country.
+
+```{r}
+#| echo: true
+tb07 <- who_dat %>% 
+  filter(year == 2007) %>% 
+  group_by(country) %>% 
+  summarise(tb_cases = sum(value)) %>% 
+  ungroup()
+
+tb07
+```
+
+----
+
+Now we can join the 2 datasets together...
+
+```{r}
+#| echo: true
+data07 <- tb07 %>% 
+  left_join(pop07)
+
+data07
+```
+
+
+----
+
+...and calculate the TB incidence per 100'000 persons.
+
+```{r}
+#| echo: true
+data07 <- data07 %>% 
+  select(-lifeExp, -gdpPercap) %>% # We don't need those 2 variables
+  mutate(tb_incidence = tb_cases / pop * 100000) %>% 
+  filter(!is.na(tb_incidence))
+  
+
+
+data07
+```
+
+--- 
+
+## {.scrollable}
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "Show the code"
+data07 %>% 
+  ggplot(aes(y = country, x = tb_incidence)) + 
+  geom_point() + 
+  labs(x = "Pulmonary TB, Incidence per 100'000 people (in 2007)", 
+       y = "Counry", 
+       caption = "WHO TB report") + 
+  theme_minimal()
+```
+
+---
+
+## {.scrollable}
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "Show the code"
+data07 %>% 
+  mutate(country = fct_reorder(country, tb_incidence)) %>% 
+  ggplot(aes(y = country, x = tb_incidence)) + 
+  geom_point() + 
+  scale_x_log10() + 
+  labs(x = "Pulmonary TB, TB Incidence per 100'000 people (in 2007)", 
+       y = "Counry", 
+       caption = "WHO TB report") + 
+  theme_minimal()
+```
+
+---
+
+## {.scrollable}
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "Show the code"
+data07 %>% 
+  mutate(country = fct_reorder(country, tb_incidence)) %>% 
+  ggplot(aes(y = country, x = tb_incidence)) + 
+  geom_point(aes(color = continent)) + 
+  scale_x_log10() +
+  scale_y_discrete(guide = guide_axis(check.overlap = TRUE)) + 
+  labs(x = "Pulmonary TB, Incidence per 100'000 people (in 2007)", 
+       y = "Counry", 
+       caption = "WHO TB report", 
+       color = NULL) + 
+  theme_minimal()
+```
+
+---
+
+For those who are surprised about the low incidence:   
+Remeber our TB dataset only includes new lung-TB cases of men <25 years:
+
+```{r}
+#| echo: true
+who_dat %>% 
+  count(gender, agegroup)
+```
+
+
+---
+
 
 
 -   Coding
