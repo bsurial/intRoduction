@@ -19,7 +19,7 @@ from: markdown+emoji
 
 ## Look at and feel **R** and **R-Studio**
 
-![](Rlogos.png){fig-align="center"}
+![](figs/Rlogos.png){fig-align="center"}
 
 ## Look at and feel **R** and **R-Studio**
 
@@ -36,7 +36,7 @@ from: markdown+emoji
 ## Project management: (1) Folders
 
 ::: {layout="[[-1], [1], [-1]]"}
-![](folders.png)
+![](figs/folders.png)
 :::
 
 ## Project management: (2) Scripts
@@ -54,7 +54,7 @@ from: markdown+emoji
 > **"In every project you have at least one other collaborator: future-you. You don't want future-you to curse past-you"** *Hadley Wickham*
 :::
 
-![](hadley-pic.jpeg){.absolute top="300" left="350" width="300"}
+![](figs/hadley-pic.jpeg){.absolute top="300" left="350" width="300"}
 
 ## 
 
@@ -66,7 +66,7 @@ from: markdown+emoji
 > *Jenny Bryan*
 :::
 
-![](jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
+![](figs/jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
 
 ## 
 
@@ -78,7 +78,7 @@ from: markdown+emoji
 > *Jenny Bryan*
 :::
 
-![](jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
+![](figs/jenny-pic.jpeg){.absolute top="300" left="700" width="300"}
 
 ## Project management: (3) Projects
 
@@ -91,18 +91,18 @@ from: markdown+emoji
 
 ## Project management: (3) Projects
 
-![](rstudio-workspace.png)
+![](figs/rstudio-workspace.png)
 
 ## 
 
-And while we're there: ![](rainbows.png)
+And while we're there: ![](figs/rainbows.png)
 
 ## Project management: (3) Projects
 
 -   Automatically sets the working directory for Project A to Project A
 -   Makes switching from Project A to Project B very easy
 -   All paths are relative by default
--   You can work simultaneously on ≥ 1 project ![](r-project-icon.png){.absolute top="450" left="750" width="200"}
+-   You can work simultaneously on ≥ 1 project ![](figs/r-project-icon.png){.absolute top="450" left="750" width="200"}
 
 ------------------------------------------------------------------------
 
@@ -120,11 +120,11 @@ For more details on "Project-oriented" workflows, see Jenny Bryans excellent web
 
 ## Steps in a data analysis project
 
-![](data-science.png){.absolute top="250" left="220" height="250"}
+![](figs/data-science.png){.absolute top="250" left="220" height="250"}
 
 ## Tidyverse provides tools for each step
 
-![](tidyverse-package-workflow.png)
+![](figs/tidyverse-package-workflow.png)
 
 ------------------------------------------------------------------------
 
@@ -186,7 +186,7 @@ who_dat
 
 ## Pipe operator
 
-![](magrittr.jpeg)
+![](figs/magrittr.jpeg)
 
 Shortcut: ⌘ + ⇧ + M / crtl + ⇧ + M
 
@@ -212,7 +212,7 @@ head(filter(who_dat, country == "Brazil"), 1)
 
 :weary:
 
----
+------------------------------------------------------------------------
 
 ### `filter()`: pick observations by their values
 
@@ -224,7 +224,7 @@ who_dat %>%
 
 ## Logical operators
 
-![](logicals.png)
+![](figs/logicals.png)
 
 Special case: `is.na()`
 
@@ -400,10 +400,9 @@ who_dat %>%
 
 ------------------------------------------------------------------------
 
-
 ## Cheat sheet to the rescue!
 
-![](dplyr-cheatsheet.png){fig-align="center"}
+![](figs/dplyr-cheatsheet.png){fig-align="center"}
 
 You find cheat sheets under: **Help** \> **Cheat Sheets**
 
@@ -417,7 +416,6 @@ You find cheat sheets under: **Help** \> **Cheat Sheets**
 
 ------------------------------------------------------------------------
 
-
 ## Outline Day 2
 
 -   Repeat dplyr basics
@@ -425,12 +423,9 @@ You find cheat sheets under: **Help** \> **Cheat Sheets**
 -   Use the `forcats` package
 -   Create first graph using `ggplot2`
 
+------------------------------------------------------------------------
 
-----
-
-
-We want to look at the TB data in relation to the population. The Gapminder
-dataset provides the data we need.
+We want to look at the TB data in relation to the population. The Gapminder dataset provides the data we need.
 
 ```{r}
 #| echo: true
@@ -439,7 +434,7 @@ pop <- read_rds("data/gapminder_data.rds")
 pop
 ```
 
----
+------------------------------------------------------------------------
 
 We will only look at the most recent year, which is 2007.
 
@@ -451,10 +446,9 @@ pop07 <- pop %>%
 pop07
 ```
 
----
+------------------------------------------------------------------------
 
-We still have more than one observation per year in our TB dataset. 
-Lets use summarise to collapse to one value per country.
+We still have more than one observation per year in our TB dataset. Lets use summarise to collapse to one value per country.
 
 ```{r}
 #| echo: true
@@ -467,7 +461,7 @@ tb07 <- who_dat %>%
 tb07
 ```
 
-----
+------------------------------------------------------------------------
 
 Now we can join the 2 datasets together...
 
@@ -479,8 +473,7 @@ data07 <- tb07 %>%
 data07
 ```
 
-
-----
+------------------------------------------------------------------------
 
 ...and calculate the TB incidence per 100'000 persons.
 
@@ -496,9 +489,9 @@ data07 <- data07 %>%
 data07
 ```
 
---- 
+------------------------------------------------------------------------
 
-## {.scrollable}
+##  {.scrollable}
 
 ```{r}
 #| echo: true
@@ -513,9 +506,9 @@ data07 %>%
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
-## {.scrollable}
+##  {.scrollable}
 
 ```{r}
 #| echo: true
@@ -532,9 +525,9 @@ data07 %>%
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
-## {.scrollable}
+##  {.scrollable}
 
 ```{r}
 #| echo: true
@@ -553,10 +546,10 @@ data07 %>%
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
-For those who are surprised about the low incidence:   
-Remeber our TB dataset only includes new lung-TB cases of men <25 years:
+For those who are surprised about the low incidence:\
+Remeber our TB dataset only includes new lung-TB cases of men \<25 years:
 
 ```{r}
 #| echo: true
@@ -564,10 +557,7 @@ who_dat %>%
   count(gender, agegroup)
 ```
 
-
----
-
-
+------------------------------------------------------------------------
 
 -   Coding
 
@@ -659,7 +649,7 @@ broom::tidy(m) %>%
 ## Resources
 
 -   [R for Data Science](https://r4ds.had.co.nz/index.html)
--   [\@rstudiotipson Twitter](https://twitter.com/rstudiotips)
+-   [\@rstudiotip son Twitter](https://twitter.com/rstudiotips)
 -   [What they forgot to teach you about R](https://rstats.wtf/)
 -   [Happy Git with R](https://happygitwithr.com/)
 -   [Stackoverflow](https://stackoverflow.com/)
