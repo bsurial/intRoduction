@@ -10,7 +10,7 @@
   <meta name="generator" content="quarto-1.1.168">
 
   <meta name="author" content="Bernard Surial">
-  <title>IntRoduction - Day 1</title>
+  <title>IntRoduction</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui">
@@ -388,7 +388,7 @@
     <div class="slides">
 
 <section id="title-slide" class="center">
-  <h1 class="title">IntRoduction - Day 1</h1>
+  <h1 class="title">IntRoduction</h1>
   <p class="author">Bernard Surial</p>
   <p class="institute">Infektiologie | Inselspital Bern</p>
 </section>
@@ -1027,8 +1027,8 @@ x dplyr::lag()    masks stats::lag()</code></pre>
 <ul>
 <li>Repeat dplyr basics</li>
 <li>Join datasets</li>
-<li>Use the <code>forcats</code> package</li>
 <li>Create first graph using <code>ggplot2</code></li>
+<li>Learn about <strong>Tidy Data</strong></li>
 </ul>
 </section>
 <section class="slide level2">
@@ -1237,115 +1237,174 @@ Remeber our TB dataset only includes new lung-TB cases of men &lt;25 years:</p>
 </div>
 </div>
 </section>
-<section class="slide level2">
+<section id="joining-datasets-together" class="slide level2">
+<h2>Joining datasets together</h2>
 
-<ul>
-<li><p>Coding</p></li>
-<li><p>assigning names</p></li>
-<li><p>using functions</p></li>
-<li><p><code>==</code>, <code>!=</code>, <code>&amp;</code>, <code>|</code>, <code>!</code></p></li>
-<li><p>variable types (character, numeric, logical)</p></li>
+<img data-src="figs/join-venn.png" class="r-stretch"><ul>
+<li><code>left_join()</code> keeps all observations in x.</li>
+<li><code>right_join()</code> keeps all observations in y.</li>
+<li><code>full_join()</code> keeps all observations in x and y.</li>
 </ul>
 </section>
-<section id="data-manipulation" class="slide level2">
-<h2>Data manipulation</h2>
+<section id="factors" class="slide level2">
+<h2>Factors</h2>
+<p>Factors help you to organize characters in the way you want. If you don’t mind the order, you don’t need factors. I use them mainly for:</p>
 <ul>
-<li><p>Read data in various formats</p></li>
-<li><p>readxl, haven</p></li>
-<li><p>csv, rds</p></li>
-<li><p>Save data</p></li>
-<li><p>Standard folder structure</p></li>
-<li><p>Use prefix: e.g.&nbsp;<code>01-data.rds</code></p></li>
-<li><p>Concept of tibble vs.&nbsp;data.frame. Show <code>View()</code>.</p></li>
+<li><strong>Graphs</strong>: logical order to convey a message</li>
+<li><strong>Tables</strong>: order them e.g.&nbsp;by frequency</li>
+<li><strong>Models</strong>: to set the “reference” category</li>
 </ul>
 </section>
-<section id="outline" class="slide level2">
-<h2>Outline</h2>
-<ul>
-<li><p>Use <code>%&gt;%</code> for readability</p></li>
-<li><p><code>dplyr</code> verbs</p></li>
-<li><p><code>select</code>, <code>arrange</code>, <code>filter</code>, <code>mutate</code>, <code>summarise</code>, <code>group_by</code></p></li>
-<li></li>
-</ul>
+<section id="some-examples" class="slide level2">
+<h2>Some examples:</h2>
+<p>Set factor levels:</p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1"></a><span class="fu">factor</span>(variable, <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">"level1"</span>, <span class="st">"level2"</span>, <span class="st">"level3"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Arrange factors from <code>a</code> according to values of <code>b</code>:</p>
+<div class="sourceCode" id="cb55"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb55-2"><a href="#cb55-2"></a>  <span class="fu">mutate</span>(<span class="at">a =</span> <span class="fu">fct_reorder</span>(a, b))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Lump many levels to a limited set of factors (here top 5):</p>
+<div class="sourceCode" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>data <span class="sc">%&gt;%</span> </span>
+<span id="cb56-2"><a href="#cb56-2"></a>  <span class="fu">mutate</span>(<span class="at">lumped_categories =</span> <span class="fu">fct_lump</span>(many_categories, <span class="at">n =</span> <span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>For more information: <a href="https://r4ds.had.co.nz/factors.html">https://r4ds.had.co.nz/factors.html</a></p>
 </section>
-<section id="data-analysis-workflow" class="slide level2">
-<h2>Data analysis workflow</h2>
-
-<img data-src="https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png" class="r-stretch"><p>————————————————————————<code>{r} #| echo: true library(tidyverse)</code></p>
+<section id="our-example-of-fct_reorder" class="slide level2 scrollable">
+<h2>Our example of <code>fct_reorder()</code></h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb54"><pre class="sourceCode numberSource markdown number-lines code-with-copy"><code class="sourceCode markdown"><span id="cb54-1"><a href="#cb54-1"></a><span class="in">```{r}</span></span>
-<span id="cb54-2"><a href="#cb54-2"></a><span class="dv">2</span><span class="sc">+</span><span class="dv">2</span></span>
-<span id="cb54-3"><a href="#cb54-3"></a><span class="in">```</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] 4</code></pre>
+<details>
+<summary>Show the code</summary>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a>data07 <span class="sc">%&gt;%</span> </span>
+<span id="cb57-2"><a href="#cb57-2"></a>  <span class="fu">mutate</span>(<span class="at">country =</span> <span class="fu">fct_reorder</span>(country, tb_incidence)) <span class="sc">%&gt;%</span> </span>
+<span id="cb57-3"><a href="#cb57-3"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">y =</span> country, <span class="at">x =</span> tb_incidence)) <span class="sc">+</span> </span>
+<span id="cb57-4"><a href="#cb57-4"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">color =</span> continent)) <span class="sc">+</span> </span>
+<span id="cb57-5"><a href="#cb57-5"></a>  <span class="fu">scale_x_log10</span>() <span class="sc">+</span></span>
+<span id="cb57-6"><a href="#cb57-6"></a>  <span class="fu">scale_y_discrete</span>(<span class="at">guide =</span> <span class="fu">guide_axis</span>(<span class="at">check.overlap =</span> <span class="cn">TRUE</span>)) <span class="sc">+</span> </span>
+<span id="cb57-7"><a href="#cb57-7"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">"Pulmonary TB, Incidence per 100'000 people (in 2007)"</span>, </span>
+<span id="cb57-8"><a href="#cb57-8"></a>       <span class="at">y =</span> <span class="st">"Counry"</span>, </span>
+<span id="cb57-9"><a href="#cb57-9"></a>       <span class="at">caption =</span> <span class="st">"WHO TB report"</span>, </span>
+<span id="cb57-10"><a href="#cb57-10"></a>       <span class="at">color =</span> <span class="cn">NULL</span>) <span class="sc">+</span> </span>
+<span id="cb57-11"><a href="#cb57-11"></a>  <span class="fu">theme_minimal</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+
 </div>
-</div>
-</section>
-<section id="tidy-data" class="slide level2">
-<h2>Tidy data</h2>
+<img data-src="day1_files/figure-revealjs/unnamed-chunk-29-1.png" width="960" class="r-stretch"></section>
+<section id="try-to-work-with-tidy-data" class="slide level2">
+<h2>Try to work with <strong>tidy data</strong></h2>
 <ol type="1">
-<li><p>Each <span class="yellow"><strong>variable</strong></span> must have its own column.</p></li>
+<li><p>Each variable must have its own column.</p></li>
 <li><p>Each observation must have its own row.</p></li>
 <li><p>Each value must have its own cell.</p></li>
 </ol>
 
 <img data-src="https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png" class="r-stretch"></section>
-<section id="model-basics" class="slide level2">
-<h2>Model basics</h2>
-<ul>
-<li><p>Linear regression</p></li>
-<li><p>Logistic regression</p></li>
-<li><p><code>broom::tidy(m, exp = TRUE)</code></p></li>
-</ul>
+<section id="examples" class="slide level2">
+<h2>Examples:</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 234 × 6
+   manufacturer model      displ  year   cyl trans     
+   &lt;chr&gt;        &lt;chr&gt;      &lt;dbl&gt; &lt;int&gt; &lt;int&gt; &lt;chr&gt;     
+ 1 audi         a4           1.8  1999     4 auto(l5)  
+ 2 audi         a4           1.8  1999     4 manual(m5)
+ 3 audi         a4           2    2008     4 manual(m6)
+ 4 audi         a4           2    2008     4 auto(av)  
+ 5 audi         a4           2.8  1999     6 auto(l5)  
+ 6 audi         a4           2.8  1999     6 manual(m5)
+ 7 audi         a4           3.1  2008     6 auto(av)  
+ 8 audi         a4 quattro   1.8  1999     4 manual(m5)
+ 9 audi         a4 quattro   1.8  1999     4 auto(l5)  
+10 audi         a4 quattro   2    2008     4 manual(m6)
+# … with 224 more rows</code></pre>
+</div>
+</div>
+<p>Tidy <span class="emoji" data-emoji="+1">👍</span></p>
 </section>
-<section id="linear-regression-1" class="slide level2">
-<h2>Linear regression (1)</h2>
-<h3 id="section-7"></h3>
+<section id="examples-1" class="slide level2">
+<h2>Examples:</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb56"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1"></a>mpg <span class="sc">%&gt;%</span> </span>
-<span id="cb56-2"><a href="#cb56-2"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> hwy, <span class="at">y =</span> displ)) <span class="sc">+</span> </span>
-<span id="cb56-3"><a href="#cb56-3"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
-<span id="cb56-4"><a href="#cb56-4"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">"lm"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 344 × 4
+   species island    bill_length_mm bill_depth_mm
+   &lt;chr&gt;   &lt;chr&gt;              &lt;dbl&gt;         &lt;dbl&gt;
+ 1 Adelie  Torgersen           39.1          18.7
+ 2 Adelie  Torgersen           39.5          17.4
+ 3 Adelie  Torgersen           40.3          18  
+ 4 Adelie  Torgersen           NA            NA  
+ 5 Adelie  Torgersen           36.7          19.3
+ 6 Adelie  Torgersen           39.3          20.6
+ 7 Adelie  Torgersen           38.9          17.8
+ 8 Adelie  Torgersen           39.2          19.6
+ 9 Adelie  Torgersen           34.1          18.1
+10 Adelie  Torgersen           42            20.2
+# … with 334 more rows</code></pre>
 </div>
-<img data-src="day1_files/figure-revealjs/unnamed-chunk-30-1.png" width="960" class="r-stretch"></section>
-<section id="linear-regression-2" class="slide level2">
-<h2>Linear regression (2)</h2>
+</div>
+<p>Tidy <span class="emoji" data-emoji="+1">👍</span></p>
+</section>
+<section id="examples-2" class="slide level2">
+<h2>Examples:</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(displ <span class="sc">~</span> hwy, <span class="at">data =</span> mpg) <span class="co"># generate linear regression model</span></span>
-<span id="cb57-2"><a href="#cb57-2"></a>broom<span class="sc">::</span><span class="fu">tidy</span>(m) <span class="sc">%&gt;%</span> </span>
-<span id="cb57-3"><a href="#cb57-3"></a>  <span class="fu">mutate</span>(<span class="at">p.value =</span> scales<span class="sc">::</span><span class="fu">pvalue</span>(p.value)) <span class="sc">%&gt;%</span> </span>
-<span id="cb57-4"><a href="#cb57-4"></a>  knitr<span class="sc">::</span><span class="fu">kable</span>(<span class="at">digit =</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-<div class="cell-output-display">
-<table>
-<thead>
-<tr class="header">
-<th style="text-align: left;">term</th>
-<th style="text-align: right;">estimate</th>
-<th style="text-align: right;">std.error</th>
-<th style="text-align: right;">statistic</th>
-<th style="text-align: left;">p.value</th>
-</tr>
-</thead>
-<tbody>
-<tr class="odd">
-<td style="text-align: left;">(Intercept)</td>
-<td style="text-align: right;">7.37</td>
-<td style="text-align: right;">0.22</td>
-<td style="text-align: right;">33.27</td>
-<td style="text-align: left;">&lt;0.001</td>
-</tr>
-<tr class="even">
-<td style="text-align: left;">hwy</td>
-<td style="text-align: right;">-0.17</td>
-<td style="text-align: right;">0.01</td>
-<td style="text-align: right;">-18.15</td>
-<td style="text-align: left;">&lt;0.001</td>
-</tr>
-</tbody>
-</table>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 3,173 × 4
+   country      year new_sp_m014 new_sp_m1524
+   &lt;chr&gt;       &lt;int&gt;       &lt;int&gt;        &lt;int&gt;
+ 1 Afghanistan  1997           0           10
+ 2 Afghanistan  1998          30          129
+ 3 Afghanistan  1999           8           55
+ 4 Afghanistan  2000          52          228
+ 5 Afghanistan  2001         129          379
+ 6 Afghanistan  2002          90          476
+ 7 Afghanistan  2003         127          511
+ 8 Afghanistan  2004         139          537
+ 9 Afghanistan  2005         151          606
+10 Afghanistan  2006         193          837
+# … with 3,163 more rows</code></pre>
 </div>
 </div>
+<p>Not tidy <span class="emoji" data-emoji="-1">👎</span></p>
+</section>
+<section id="examples-3" class="slide level2">
+<h2>Examples:</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 6,382 × 8
+   country     iso2  iso3   year diag         gender agegroup  value
+   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;     &lt;int&gt;
+ 1 Afghanistan AF    AFG    1997 sputum smear m      0-14 yrs      0
+ 2 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs    10
+ 3 Afghanistan AF    AFG    1998 sputum smear m      0-14 yrs     30
+ 4 Afghanistan AF    AFG    1998 sputum smear m      15-24 yrs   129
+ 5 Afghanistan AF    AFG    1999 sputum smear m      0-14 yrs      8
+ 6 Afghanistan AF    AFG    1999 sputum smear m      15-24 yrs    55
+ 7 Afghanistan AF    AFG    2000 sputum smear m      0-14 yrs     52
+ 8 Afghanistan AF    AFG    2000 sputum smear m      15-24 yrs   228
+ 9 Afghanistan AF    AFG    2001 sputum smear m      0-14 yrs    129
+10 Afghanistan AF    AFG    2001 sputum smear m      15-24 yrs   379
+# … with 6,372 more rows</code></pre>
+</div>
+</div>
+<p>Not tidy <span class="emoji" data-emoji="-1">👎</span></p>
+</section>
+<section id="examples-4" class="slide level2">
+<h2>Examples:</h2>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 11,664 × 7
+   country     iso2  iso3   year diag         gender agegroup 
+   &lt;chr&gt;       &lt;chr&gt; &lt;chr&gt; &lt;int&gt; &lt;chr&gt;        &lt;chr&gt;  &lt;chr&gt;    
+ 1 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 2 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 3 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 4 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 5 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 6 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 7 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 8 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+ 9 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+10 Afghanistan AF    AFG    1997 sputum smear m      15-24 yrs
+# … with 11,654 more rows</code></pre>
+</div>
+</div>
+<p>Tidy <span class="emoji" data-emoji="+1">👍</span></p>
 </section>
 <section id="resources" class="slide level2">
 <h2>Resources</h2>

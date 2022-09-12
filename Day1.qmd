@@ -1,5 +1,5 @@
 ---
-title: "IntRoduction - Day 1"
+title: "IntRoduction"
 author: "Bernard Surial"
 institute: "Infektiologie | Inselspital Bern"
 format: 
@@ -420,8 +420,8 @@ You find cheat sheets under: **Help** \> **Cheat Sheets**
 
 -   Repeat dplyr basics
 -   Join datasets
--   Use the `forcats` package
 -   Create first graph using `ggplot2`
+-   Learn about **Tidy Data**
 
 ------------------------------------------------------------------------
 
@@ -559,56 +559,75 @@ who_dat %>%
 
 ------------------------------------------------------------------------
 
--   Coding
+## Joining datasets together
 
--   assigning names
+![](figs/join-venn.png)
 
--   using functions
 
--   `==`, `!=`, `&`, `|`, `!`
+- `left_join()` keeps all observations in x.
+- `right_join()` keeps all observations in y.
+- `full_join()` keeps all observations in x and y.
 
--   variable types (character, numeric, logical)
+----
 
-## Data manipulation
+## Factors
 
--   Read data in various formats
+Factors help you to organize characters in the way you want. If you don't
+mind the order, you don't need factors. I use them mainly for: 
 
--   readxl, haven
+- **Graphs**: logical order to convey a message
+- **Tables**: order them e.g. by frequency
+- **Models**: to set the "reference" category
 
--   csv, rds
+---
 
--   Save data
+## Some examples: 
 
--   Standard folder structure
-
--   Use prefix: e.g. `01-data.rds`
-
--   Concept of tibble vs. data.frame. Show `View()`.
-
-## Outline
-
--   Use `%>%` for readability
-
--   `dplyr` verbs
-
--   `select`, `arrange`, `filter`, `mutate`, `summarise`, `group_by`
-
--   
-
-## Data analysis workflow
-
-![](https://d33wubrfki0l68.cloudfront.net/795c039ba2520455d833b4034befc8cf360a70ba/558a5/diagrams/data-science-explore.png)
-
-------------------------------------------------------------------------`{r} #| echo: true library(tidyverse)`
-
-```{r}
-#| echo: fenced
-2+2
+Set factor levels:
+```{.r}
+factor(variable, levels = c("level1", "level2", "level3"))
 ```
 
-## Tidy data
+Arrange factors from `a` according to values of `b`:
+```{.r}
+data %>% 
+  mutate(a = fct_reorder(a, b))
+```
 
-1.  Each [**variable**]{.yellow} must have its own column.
+Lump many levels to a limited set of factors (here top 5): 
+```{.r}
+data %>% 
+  mutate(lumped_categories = fct_lump(many_categories, n = 5))
+```
+
+For more information: [https://r4ds.had.co.nz/factors.html](https://r4ds.had.co.nz/factors.html)
+
+---
+
+## Our example of `fct_reorder()` {.scrollable}
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "Show the code"
+data07 %>% 
+  mutate(country = fct_reorder(country, tb_incidence)) %>% 
+  ggplot(aes(y = country, x = tb_incidence)) + 
+  geom_point(aes(color = continent)) + 
+  scale_x_log10() +
+  scale_y_discrete(guide = guide_axis(check.overlap = TRUE)) + 
+  labs(x = "Pulmonary TB, Incidence per 100'000 people (in 2007)", 
+       y = "Counry", 
+       caption = "WHO TB report", 
+       color = NULL) + 
+  theme_minimal()
+```
+
+---
+
+## Try to work with **tidy data**
+
+1.  Each variable must have its own column.
 
 2.  Each observation must have its own row.
 
@@ -616,35 +635,66 @@ who_dat %>%
 
 ![](https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png)
 
-## Model basics
+---
 
--   Linear regression
-
--   Logistic regression
-
--   `broom::tidy(m, exp = TRUE)`
-
-## Linear regression (1)
-
-### 
+## Examples: 
 
 ```{r}
-#| echo: true
 mpg %>% 
-  ggplot(aes(x = hwy, y = displ)) + 
-  geom_point() + 
-  geom_smooth(method = "lm")
+  select(1:6)
 ```
 
-## Linear regression (2)
+Tidy :+1:
+
+---
+
+
+## Examples: 
 
 ```{r}
-#| echo: true
-m <- lm(displ ~ hwy, data = mpg) # generate linear regression model
-broom::tidy(m) %>% 
-  mutate(p.value = scales::pvalue(p.value)) %>% 
-  knitr::kable(digit = 2)
+read_csv("data/penguin.csv") %>% 
+  select(1:4)
 ```
+
+Tidy :+1:
+
+---
+
+
+## Examples: 
+
+```{r}
+who %>% 
+  filter(!is.na(new_sp_m014)) %>% 
+  select(-contains("iso")) %>% 
+  select(1:4)
+```
+
+Not tidy :-1:
+
+---
+
+## Examples: 
+
+```{r}
+who_dat
+```
+
+Not tidy :-1:
+
+---
+
+## Examples: 
+
+```{r}
+who_dat %>% 
+  filter(country == "Afghanistan") %>% 
+  uncount(value)
+```
+
+Tidy :+1:
+
+---
 
 ## Resources
 
