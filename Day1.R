@@ -170,7 +170,7 @@ who_dat %>%
   theme(legend.position = "None")
 
 
-# I made a trick which is quite misleading. Y-axes are not the same on each 
+# I used a trick which is quite misleading. Y-axes are not the same on each 
 # facet. Adapt the code and see what happens if you keep the same y-axis. 
 
 who_dat %>% 
@@ -208,5 +208,79 @@ who_dat %>%
        caption = "Data Source: Global Tuberculosis Report") + 
   theme_minimal() + 
   theme(legend.position = "None")
+
+
+
+
+
+-------------------------------------------------------------------------------
+  
+#### Now let's use a new dataset and look at surgeries
+
+surgery <- read_rds("data/surgery_data.rds")
+
+# The dataset contains 32'001 surgeries. Variables include covariates at
+# the time of sugery (age, gender, race, baseline_cancer etc.) and several
+# outcome variables (mort30 = 30-day mortaliy, complication = any complication
+# after the surgery).
+# 
+# It was used for a paper that investigated the impact the hypotheses that
+# surgery complications are more common at the end of the week or 
+# at the end of the day.
+# doi: 10.1213/ANE.0b013e3182315a6d
+
+# Let's explore the first hypothesis. For that, let's create a graph to see: 
+
+surgery %>% 
+  group_by(dow) %>% # dow = day of week
+  count(mort30) %>% 
+  mutate(p = n/sum(n) * 100) %>% # we create percents here
+  filter(mort30 == "Yes") %>% 
+  ggplot(aes(x = dow, y = p)) + 
+  geom_col() +
+  labs(x = "Weekday", 
+       y = "Infections per interventions (%)", 
+       title = "Proportion of infections, stratified by weekday") + 
+  theme_minimal(base_family = "Segoe UI") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+# Now try to do the same for hour of the day. What do you conclude?
+
+
+d %>% 
+  group_by(hour) %>% 
+  count(mort30) %>% 
+  mutate(p = n/sum(n) * 100) %>% 
+  ggplot(aes(x = hour, y = p)) + 
+  geom_col(fill = "darkblue", alpha = 0.7) + 
+  facet_wrap(~mort30, scales = "free_y") + 
+  labs(x = "Time of day", 
+       y = "Infections per interventions (%)", 
+       title = "Proportion of infections, stratified by weekday") + 
+  theme_minimal(base_family = "Segoe UI") + 
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+# Bonus question: What are the unadjusted and adjusted Odds ratios for
+# infection, for each hour increase? Adjust for all variables that contain 
+# "baseline_" age, and BMI. Tip, use glm() together with family = binomial.
+
+
+model_data <- surgery %>% 
+  mutate(mort_cat = mort30 == "Yes") %>% 
+  select(age, bmi, starts_with("baseline"), mort_cat, hour)
+
+
+crude_m <- glm(mort_cat ~ hour, family = binomial, data = model_data)
+m <- glm(mort_cat ~ hour + ., family = binomial, data = model_data)  
+
+broom::tidy(crude_m, exp = TRUE, conf.int = TRUE) %>% 
+  filter(term == "hour") # aOR = 1.13, 95% CI 1.07 to 1.19.
+
+broom::tidy(m, exp = TRUE, conf.int = TRUE) %>% 
+  filter(term == "hour") # aOR = 1.11, 95% CI 1.05 to 1.18.
+
+
 
 
