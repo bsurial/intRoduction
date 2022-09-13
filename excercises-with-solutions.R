@@ -28,7 +28,8 @@ library(skimr) # This package allows to describe the dataset in a compact way.
 skim(penguin)
 
 
-# Questions
+#-------------------------------------------------------------------------------
+### DPLYR Exercises
 # ---
 
 
@@ -127,7 +128,135 @@ xlsx::write.xlsx(penguin_c, "processed/penguin_complete.xlsx")
 
 
 
-# Optional excercise: ------------------------------------------------------
+
+# ----------------------------------------------------------------------------
+### JOINING EXCERCISES ###
+# ------
+  
+# Now we will analyse all flights from NYC airport in 2013
+
+# Load the datasets: 
+
+airlines <- read_rds("data/airlines.rds") # Airlines that fly from NYC
+airports <- read_rds("data/airports.rds") # Airports that are flown to from NYC
+planes <- read_rds("data/planes.rds") # Planes used for those flights
+flights <- read_rds("data/flights.rds") # All flights from 2013
+
+
+# Explore the datasets
+flights
+airports
+airlines
+planes
+
+
+
+# 1. What flight number has the longest delay?
+flights %>% 
+  arrange(desc(delay)) # Flight 51 by "HA" to HNL, delay of 1272 minutes (21h)!
+
+
+# 2. Join datasets together, so we have more info for the flights:
+
+flight_combined <- flights %>% 
+  left_join(airports, by = "dest") %>% 
+  left_join(airlines, by = "carrier") %>% 
+  left_join(planes, by = "tailnum")
+
+
+# 3. Can you give us more information on the flight with the longest delay?
+#    What was the airport? Which airline was it? How old was the plane?
+#    Tipp: Use select to only show the variables you're interested in.
+
+
+flight_combined %>% 
+  arrange(desc(delay)) %>% 
+  select(flight, name, airline, year) 
+
+# Honolulu Intl by Hawaiian Arilines Inc. The plane was 2 years old.
+
+
+## 4. Which airline was on average the fastest? Which one had was the slowest?
+flight_combined %>% 
+  group_by(airline) %>% 
+  summarise(mean_delay = mean(delay, na.rm = TRUE)) %>% 
+  arrange(mean_delay) # Alaska Airlines Inc. was fastests, Frontier Airlines slowest
+
+
+## 5. Is there a relationship between age of plane and delay? Plot a random
+#     sample of 2000 flights. (Tip: use set.seed(1) so results are reproducible)
+
+set.seed(1)
+flight_combined %>% 
+  mutate(age = 2013 - year) %>% 
+  slice_sample(n = 2000) %>% 
+  ggplot(aes(age, delay)) + 
+  geom_point(alpha = 0.5) + 
+  geom_smooth() + 
+  labs(x = "Age of plane (years)", 
+       y = "Delay (min)")
+  
+# There doesn't seem to be a trend.
+
+
+# --------------------------------------------------------------------------
+### GGPLOT exercises
+#-----
+
+
+penguins <- read_rds("processed/penguin_complete.rds")
+
+
+# 1. Plot the relationship between flipper length and body mass. 
+penguins %>% 
+  ggplot(aes(x = flipper_length_mm, body_mass_g)) +
+  geom_point()
+
+
+# 2. Is there a difference between male and female penguins?
+penguins %>% 
+  ggplot(aes(x = flipper_length_mm, body_mass_g)) +
+  geom_point(aes(color = sex)) + 
+  facet_wrap(~sex)
+
+# 3. Plot the relationship between bill length and bill depth. Use geom_smooth
+#    to get a trend line.
+
+penguins %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + 
+  geom_point() + 
+  geom_smooth()
+
+# 4. Do the same, but use method = "lm" for a linear model. What does our 
+#    model imply?
+
+penguins %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + 
+  geom_point() + 
+  geom_smooth(method = "lm")
+
+# 5. Have you heard of the Simpson's Paradox? Look at the same model, but for
+#    each species individually. You can use colors or facet_wrap
+
+penguins %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) + 
+  geom_point(aes(color = species)) + 
+  geom_smooth(aes(color = species), method = "lm") +
+  facet_wrap(~species) + 
+  theme(legend.position = "none")
+
+
+# 6. Try different geoms. F.exp. plot the distribution of body weights. Can you 
+#    spot which one is the heaviest pinguin?
+
+penguins %>% 
+  ggplot(aes(x = body_mass_g)) + 
+  geom_histogram(bins = 20) + 
+  facet_wrap(~species) + 
+  theme(legend.position = "none") # Gentoo is the heaviest. 
+
+
+# Now we switch to the TB dataset.
 
 # Below replicated is the graph of the TB data I showed you.
 who_dat <- read_rds("data/who_clean.rds")
@@ -208,8 +337,6 @@ who_dat %>%
        caption = "Data Source: Global Tuberculosis Report") + 
   theme_minimal() + 
   theme(legend.position = "None")
-
-
 
 
 
