@@ -563,46 +563,47 @@ who_dat %>%
 
 ![](figs/join-venn.png)
 
+-   `left_join()` keeps all observations in x.
+-   `right_join()` keeps all observations in y.
+-   `full_join()` keeps all observations in x and y.
 
-- `left_join()` keeps all observations in x.
-- `right_join()` keeps all observations in y.
-- `full_join()` keeps all observations in x and y.
-
-----
+------------------------------------------------------------------------
 
 ## Factors
 
-Factors help you to organize characters in the way you want. If you don't
-mind the order, you don't need factors. I use them mainly for: 
+Factors help you to organize characters in the way you want. If you don't mind the order, you don't need factors. I use them mainly for:
 
-- **Graphs**: logical order to convey a message
-- **Tables**: order them e.g. by frequency
-- **Models**: to set the "reference" category
+-   **Graphs**: logical order to convey a message
+-   **Tables**: order them e.g. by frequency
+-   **Models**: to set the "reference" category
 
----
+------------------------------------------------------------------------
 
-## Some examples: 
+## Some examples:
 
 Set factor levels:
-```{.r}
+
+``` r
 factor(variable, levels = c("level1", "level2", "level3"))
 ```
 
 Arrange factors from `a` according to values of `b`:
-```{.r}
+
+``` r
 data %>% 
   mutate(a = fct_reorder(a, b))
 ```
 
-Lump many levels to a limited set of factors (here top 5): 
-```{.r}
+Lump many levels to a limited set of factors (here top 5):
+
+``` r
 data %>% 
   mutate(lumped_categories = fct_lump(many_categories, n = 5))
 ```
 
-For more information: [https://r4ds.had.co.nz/factors.html](https://r4ds.had.co.nz/factors.html)
+For more information: <https://r4ds.had.co.nz/factors.html>
 
----
+------------------------------------------------------------------------
 
 ## Our example of `fct_reorder()` {.scrollable}
 
@@ -623,7 +624,7 @@ data07 %>%
   theme_minimal()
 ```
 
----
+------------------------------------------------------------------------
 
 ## Try to work with **tidy data**
 
@@ -635,9 +636,9 @@ data07 %>%
 
 ![](https://d33wubrfki0l68.cloudfront.net/6f1ddb544fc5c69a2478e444ab8112fb0eea23f8/91adc/images/tidy-1.png)
 
----
+------------------------------------------------------------------------
 
-## Examples: 
+## Examples:
 
 ```{r}
 mpg %>% 
@@ -646,10 +647,9 @@ mpg %>%
 
 Tidy :+1:
 
----
+------------------------------------------------------------------------
 
-
-## Examples: 
+## Examples:
 
 ```{r}
 read_csv("data/penguin.csv") %>% 
@@ -658,10 +658,9 @@ read_csv("data/penguin.csv") %>%
 
 Tidy :+1:
 
----
+------------------------------------------------------------------------
 
-
-## Examples: 
+## Examples:
 
 ```{r}
 who %>% 
@@ -672,9 +671,9 @@ who %>%
 
 Not tidy :-1:
 
----
+------------------------------------------------------------------------
 
-## Examples: 
+## Examples:
 
 ```{r}
 who_dat
@@ -682,9 +681,9 @@ who_dat
 
 Not tidy :-1:
 
----
+------------------------------------------------------------------------
 
-## Examples: 
+## Examples:
 
 ```{r}
 who_dat %>% 
@@ -694,13 +693,247 @@ who_dat %>%
 
 Tidy :+1:
 
+------------------------------------------------------------------------
+
+## Outline Day 3
+
+-   Basics of `ggplot2`
+-   Revisiting what we learned
+
+------------------------------------------------------------------------
+
+Let's work with the penguin dataset
+
+```{r}
+#| echo: true
+penguin <- read_csv("data/penguin.csv")
+
+penguin%>% 
+  select(-c(island, sex, year)) %>% 
+  head() 
+```
+
+------------------------------------------------------------------------
+
+## Penguin dataset
+
+![](figs/penguin-description.png)
+
+------------------------------------------------------------------------
+
+## Explore relationships: **Scatterplot**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point()
+```
+
+----
+
+## Explore relationships: **Scatterplot**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(color = "orange")
+```
+
+----
+
+## Explore relationships: **Scatterplot**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(color = "orange", alpha = 0.5)
+```
+
+----
+
+## Explore relationships: **Scatterplot**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(color = "orange", alpha = 0.5) + 
+  labs(x = "Flipper length (mm)", 
+       y = "Body mass (g)", 
+       title = "Penguin weight increases with flipper length")
+```
+
 ---
+
+## Explore relationships: **Scatterplot**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_point(aes(color = species)) + 
+  labs(x = "Flipper length (mm)", 
+       y = "Body mass (g)", 
+       title = "Penguin weight increases with flipper length")
+```
+
+
+## Explore trends: **Smoothing**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_smooth() + 
+  geom_point(aes(color = species)) + 
+  labs(x = "Flipper length (mm)", 
+       y = "Body mass (g)", 
+       title = "Standard smoothing is flexible")
+```
+
+## Explore trends: **Smoothing**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_smooth(method = "lm") + 
+  geom_point(aes(color = species)) + 
+  labs(x = "Flipper length (mm)", 
+       y = "Body mass (g)", 
+       title = "method = 'lm' imposes linear relastionship")
+```
+
+
+## Explore trends: **Smoothing**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g)) +
+  geom_smooth(aes(color = species), method = "lm") + 
+  geom_point(aes(color = species)) + 
+  labs(x = "Flipper length (mm)", 
+       y = "Body mass (g)", 
+       title = "Different trends for each penguin")
+```
+
+
+## Explore Distributions: **Histogram**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = body_mass_g)) + 
+  geom_histogram(aes(fill = species)) + 
+  facet_wrap(~species)
+```
+
+
+## Explore Distributions: **Histogram**
+
+```{r}
+#| echo: true
+penguin %>% 
+  ggplot(aes(x = body_mass_g)) + 
+  geom_histogram(aes(fill = species)) + 
+  facet_wrap(~species) + 
+  theme(legend.position = "None") # Legend is redundant, turn off
+```
+
+
+## Explore trends over time: **Line graph**
+
+```{r}
+#| echo: true
+penguin_year <- penguin %>% 
+  group_by(species) %>% 
+  count(year)
+
+penguin_year
+```
+
+
+## Explore trends over time: **Line graph**
+
+```{r}
+#| echo: true
+penguin_year %>% 
+  ggplot(aes(x = year, y = n)) + 
+  geom_line(aes(color = species)) + 
+  labs(x = "Sampling year", 
+       y = "N of penguins sampled", 
+       color = "Penguin")
+```
+
+## Anatomy of ggplot
+
+```{.r}
+<DATA> %>% 
+  ggplot() + 
+    <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+GEOM_FUNCTIONS:
+
+- `geom_point()`: Scatterplot  
+- `geom_bar()`: Barchart  
+- `geom_col()`: Barchart, but you need to provide y  
+- `geom_line()`: Linechart  
+- `geom_histogram()`: Histogram  
+- `geom_smooth()`: Flexible loess or gam smoother  
+
+## Anatomy of ggplot
+
+```{.r}
+<DATA> %>% 
+  ggplot() + 
+    <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
+```
+
+MAPPINGS:
+
+- `x` and `y`: Coordinate (axes)  
+- `color`: Color (e.g. point)  
+- `fill`: Fill (e.g. bar, area)  
+- `size`: Size of point, thickness of lines  
+- `shape`: Shape of points  
+- `linetype`: solid line, dashed line etc  
+
+## Some Inspiration
+
+
+
+![](figs/tt_logo.png){fig-align="center"}
+
+
+::: {style="text-align: center; margin-top: 1em"}
+[Cédric Scherrer](https://github.com/Z3tt/TidyTuesday)  
+<br> 
+[Georgios Karamanis](https://github.com/gkaramanis/tidytuesday)
+:::
+
+## Cédric Scherrer
+
+
+![](https://raw.githubusercontent.com/Z3tt/TidyTuesday/master/plots/2018_03/2018_03_GlobalMortality.png){.absolute top="100" left="150" width="800"}
+
+## Georgios Karamanis
+
+
+![](https://raw.githubusercontent.com/gkaramanis/tidytuesday/master/2019/2019-week-51/plots/dog-friendliness.png){.absolute top="80" left="250" width="600"}
+
+
 
 ## Resources
 
 -   [R for Data Science](https://r4ds.had.co.nz/index.html)
--   [\@rstudiotip son Twitter](https://twitter.com/rstudiotips)
+-   [\@rstudiotips on Twitter](https://twitter.com/rstudiotips)
 -   [What they forgot to teach you about R](https://rstats.wtf/)
 -   [Happy Git with R](https://happygitwithr.com/)
 -   [Stackoverflow](https://stackoverflow.com/)
 -   [R Graphics Cookbook](https://r-graphics.org/)
+-   [#TidyTuesday on Twitter](https://twitter.com/search?q=%23TidyTuesday&src=typeahead_click)
