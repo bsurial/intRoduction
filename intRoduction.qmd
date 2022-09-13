@@ -730,7 +730,7 @@ penguin %>%
   geom_point()
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Explore relationships: **Scatterplot**
 
@@ -741,7 +741,7 @@ penguin %>%
   geom_point(color = "orange")
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Explore relationships: **Scatterplot**
 
@@ -752,7 +752,7 @@ penguin %>%
   geom_point(color = "orange", alpha = 0.5)
 ```
 
-----
+------------------------------------------------------------------------
 
 ## Explore relationships: **Scatterplot**
 
@@ -766,7 +766,7 @@ penguin %>%
        title = "Penguin weight increases with flipper length")
 ```
 
----
+------------------------------------------------------------------------
 
 ## Explore relationships: **Scatterplot**
 
@@ -779,7 +779,6 @@ penguin %>%
        y = "Body mass (g)", 
        title = "Penguin weight increases with flipper length")
 ```
-
 
 ## Explore trends: **Smoothing**
 
@@ -807,7 +806,6 @@ penguin %>%
        title = "method = 'lm' imposes linear relastionship")
 ```
 
-
 ## Explore trends: **Smoothing**
 
 ```{r}
@@ -821,7 +819,6 @@ penguin %>%
        title = "Different trends for each penguin")
 ```
 
-
 ## Explore Distributions: **Histogram**
 
 ```{r}
@@ -831,7 +828,6 @@ penguin %>%
   geom_histogram(aes(fill = species)) + 
   facet_wrap(~species)
 ```
-
 
 ## Explore Distributions: **Histogram**
 
@@ -844,7 +840,6 @@ penguin %>%
   theme(legend.position = "None") # Legend is redundant, turn off
 ```
 
-
 ## Explore trends over time: **Line graph**
 
 ```{r}
@@ -855,7 +850,6 @@ penguin_year <- penguin %>%
 
 penguin_year
 ```
-
 
 ## Explore trends over time: **Line graph**
 
@@ -871,7 +865,7 @@ penguin_year %>%
 
 ## Anatomy of ggplot
 
-```{.r}
+``` r
 <DATA> %>% 
   ggplot() + 
     <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
@@ -879,16 +873,16 @@ penguin_year %>%
 
 GEOM_FUNCTIONS:
 
-- `geom_point()`: Scatterplot  
-- `geom_bar()`: Barchart  
-- `geom_col()`: Barchart, but you need to provide y  
-- `geom_line()`: Linechart  
-- `geom_histogram()`: Histogram  
-- `geom_smooth()`: Flexible loess or gam smoother  
+-   `geom_point()`: Scatterplot\
+-   `geom_bar()`: Barchart\
+-   `geom_col()`: Barchart, but you need to provide y\
+-   `geom_line()`: Linechart\
+-   `geom_histogram()`: Histogram\
+-   `geom_smooth()`: Flexible loess or gam smoother
 
 ## Anatomy of ggplot
 
-```{.r}
+``` r
 <DATA> %>% 
   ggplot() + 
     <GEOM_FUNCTION>(mapping = aes(<MAPPINGS>))
@@ -896,37 +890,29 @@ GEOM_FUNCTIONS:
 
 MAPPINGS:
 
-- `x` and `y`: Coordinate (axes)  
-- `color`: Color (e.g. point)  
-- `fill`: Fill (e.g. bar, area)  
-- `size`: Size of point, thickness of lines  
-- `shape`: Shape of points  
-- `linetype`: solid line, dashed line etc  
+-   `x` and `y`: Coordinate (axes)\
+-   `color`: Color (e.g. point)\
+-   `fill`: Fill (e.g. bar, area)\
+-   `size`: Size of point, thickness of lines\
+-   `shape`: Shape of points\
+-   `linetype`: solid line, dashed line etc
 
 ## Some Inspiration
 
-
-
 ![](figs/tt_logo.png){fig-align="center"}
 
-
 ::: {style="text-align: center; margin-top: 1em"}
-[Cédric Scherrer](https://github.com/Z3tt/TidyTuesday)  
-<br> 
-[Georgios Karamanis](https://github.com/gkaramanis/tidytuesday)
+[Cédric Scherrer](https://github.com/Z3tt/TidyTuesday)\
+<br> [Georgios Karamanis](https://github.com/gkaramanis/tidytuesday)
 :::
 
 ## Cédric Scherrer
-
 
 ![](https://raw.githubusercontent.com/Z3tt/TidyTuesday/master/plots/2018_03/2018_03_GlobalMortality.png){.absolute top="100" left="150" width="800"}
 
 ## Georgios Karamanis
 
-
 ![](https://raw.githubusercontent.com/gkaramanis/tidytuesday/master/2019/2019-week-51/plots/dog-friendliness.png){.absolute top="80" left="250" width="600"}
-
-
 
 ## Resources
 
