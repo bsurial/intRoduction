@@ -375,7 +375,7 @@ surgery %>%
 # Now try to do the same for hour of the day. What do you conclude?
 
 
-d %>% 
+surgery %>% 
   group_by(hour) %>% 
   count(mort30) %>% 
   mutate(p = n/sum(n) * 100) %>% 
@@ -403,7 +403,7 @@ crude_m <- glm(mort_cat ~ hour, family = binomial, data = model_data)
 m <- glm(mort_cat ~ hour + ., family = binomial, data = model_data)  
 
 broom::tidy(crude_m, exp = TRUE, conf.int = TRUE) %>% 
-  filter(term == "hour") # aOR = 1.13, 95% CI 1.07 to 1.19.
+  filter(term == "hour") # OR = 1.13, 95% CI 1.07 to 1.19.
 
 broom::tidy(m, exp = TRUE, conf.int = TRUE) %>% 
   filter(term == "hour") # aOR = 1.11, 95% CI 1.05 to 1.18.
